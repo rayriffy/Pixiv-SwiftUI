@@ -79,6 +79,10 @@ final class SpotlightAPI {
             }
         }
 
+        if description.isEmpty {
+            description = try extractFallbackDescription(doc: doc, amBody: amBody)
+        }
+
         var works: [SpotlightWork] = []
 
         for node in nodes {
@@ -224,18 +228,106 @@ final class SpotlightAPI {
     private func extractFeatureDescription(from container: Element) throws -> String {
         let paragraphElements = try container.getElementsByClass("_feature-article-body__paragraph")
         for element in paragraphElements {
-            let paragraphs = try element.getElementsByTag("p")
-            let texts = paragraphs.compactMap { try? $0.text() }.filter { !$0.isEmpty }
-            if !texts.isEmpty {
-                return texts.joined(separator: "\n\n")
+            let text = try extractStructuredText(from: element)
+            if !text.isEmpty {
+                return text
             }
         }
         return ""
     }
 
     private func extractDescription(from header: Element) throws -> String {
-        let paragraphs = try header.getElementsByTag("p")
-        return paragraphs.compactMap { try? $0.text() }.joined(separator: "\n\n")
+        return try extractStructuredText(from: header)
+    }
+
+    private func extractFallbackDescription(doc: Document, amBody: Element) throws -> String {
+        if let featureContainer = try amBody.getElementsByClass("_feature-article-body").first() {
+            let featureDescription = try extractFeatureDescription(from: featureContainer)
+            if !featureDescription.isEmpty {
+                return featureDescription
+            }
+        }
+
+        if let firstParagraph = try amBody.getElementsByClass("_feature-article-body__paragraph").first() {
+            let text = try extractStructuredText(from: firstParagraph)
+            if !text.isEmpty {
+                return text
+            }
+        }
+
+        if let ogDescription = try doc.select("meta[property=og:description]").first(),
+           let content = try ogDescription.attr("content").nilIfEmpty {
+            return sanitizeDescriptionLine(content)
+        }
+
+        if let metaDescription = try doc.select("meta[name=description]").first(),
+           let content = try metaDescription.attr("content").nilIfEmpty {
+            return sanitizeDescriptionLine(content.replacingOccurrences(of: "[pixivision]", with: ""))
+        }
+
+        return ""
+    }
+
+    private func extractStructuredText(from element: Element) throws -> String {
+        let blocks = try element.select("div.fab__paragraph._medium-editor-text > div, div.fab__paragraph._medium-editor-text > p, p")
+        if !blocks.isEmpty {
+            var lines: [String] = []
+            for block in blocks {
+                let line = sanitizeDescriptionLine(try extractTextPreservingInlineStyles(from: block))
+                if !line.isEmpty {
+                    lines.append(line)
+                }
+            }
+            if !lines.isEmpty {
+                return lines.joined(separator: "\n\n")
+            }
+        }
+
+        return sanitizeDescriptionLine(try extractTextPreservingInlineStyles(from: element))
+    }
+
+    private func extractTextPreservingInlineStyles(from element: Element) throws -> String {
+        var text = ""
+        for child in element.getChildNodes() {
+            text += try extractTextPreservingInlineStyles(from: child)
+        }
+        return text
+    }
+
+    private func extractTextPreservingInlineStyles(from node: Node) throws -> String {
+        if let textNode = node as? TextNode {
+            return textNode.text()
+        }
+
+        if let element = node as? Element {
+            let tag = element.tagName().lowercased()
+            if tag == "br" {
+                return "\n"
+            }
+
+            var content = ""
+            for child in element.getChildNodes() {
+                content += try extractTextPreservingInlineStyles(from: child)
+            }
+
+            if tag == "b" || tag == "strong" {
+                return content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "" : "[[B]]\(content)[[/B]]"
+            }
+
+            if tag == "i" || tag == "em" {
+                return content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "" : "[[I]]\(content)[[/I]]"
+            }
+
+            return content
+        }
+
+        return ""
+    }
+
+    private func sanitizeDescriptionLine(_ text: String) -> String {
+        text
+            .replacingOccurrences(of: "\u{00A0}", with: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 

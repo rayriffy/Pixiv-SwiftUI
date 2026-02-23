@@ -29,7 +29,9 @@ struct SpotlightDetailView: View {
                     errorView(error)
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .ignoresSafeArea(edges: .top)
         #if os(macOS)
         .navigationTitle(article.displayTitle)
@@ -59,7 +61,7 @@ struct SpotlightDetailView: View {
                 id: relatedArticle.id,
                 title: relatedArticle.title,
                 pureTitle: relatedArticle.title,
-                thumbnail: relatedArticle.thumbnail,
+                thumbnail: preferredHeaderImageURL(for: relatedArticle),
                 articleUrl: relatedArticle.articleUrl,
                 publishDate: Date()
             )
@@ -73,6 +75,7 @@ struct SpotlightDetailView: View {
                 urlString: article.thumbnail,
                 aspectRatio: 16 / 9
             )
+            .frame(maxWidth: .infinity)
             .clipped()
 
             VStack(alignment: .leading, spacing: 8) {
@@ -90,6 +93,7 @@ struct SpotlightDetailView: View {
             }
             .padding(.horizontal)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func formattedDate(_ date: Date) -> String {
@@ -124,8 +128,9 @@ struct SpotlightDetailView: View {
                     }
 
                     VStack(alignment: .leading, spacing: 12) {
-                        ForEach(descriptionParagraphs(detail.description), id: \.self) { paragraph in
-                            Text(paragraph)
+                        let paragraphs = descriptionParagraphs(detail.description)
+                        ForEach(Array(paragraphs.enumerated()), id: \.offset) { _, paragraph in
+                            descriptionText(paragraph)
                                 .font(.body)
                                 .foregroundColor(.primary.opacity(0.8))
                                 .lineSpacing(6)
@@ -135,6 +140,7 @@ struct SpotlightDetailView: View {
                     .padding()
                     .background(Color.secondary.opacity(0.05))
                     .cornerRadius(12)
+                    .textSelection(.enabled)
                 }
                 .padding(.horizontal)
                 .padding(.top, 20)
@@ -224,6 +230,97 @@ struct SpotlightDetailView: View {
 
     private func descriptionParagraphs(_ text: String) -> [String] {
         text.components(separatedBy: "\n\n").filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+    }
+
+    private func descriptionText(_ text: String) -> Text {
+        parseStyledSegments(text).reduce(Text("")) { partial, segment in
+            var current = Text(segment.text)
+            if segment.isBold {
+                current = current.bold()
+            }
+            if segment.isItalic {
+                current = current.italic()
+            }
+            return partial + current
+        }
+    }
+
+    private func parseStyledSegments(_ text: String) -> [(text: String, isBold: Bool, isItalic: Bool)] {
+        var segments: [(text: String, isBold: Bool, isItalic: Bool)] = []
+        var buffer = ""
+        var isBold = false
+        var isItalic = false
+        var index = text.startIndex
+
+        func appendBufferIfNeeded() {
+            guard !buffer.isEmpty else { return }
+            segments.append((buffer, isBold, isItalic))
+            buffer = ""
+        }
+
+        while index < text.endIndex {
+            let remaining = text[index...]
+
+            if remaining.hasPrefix("[[B]]") {
+                appendBufferIfNeeded()
+                isBold = true
+                index = text.index(index, offsetBy: 5)
+                continue
+            }
+
+            if remaining.hasPrefix("[[/B]]") {
+                appendBufferIfNeeded()
+                isBold = false
+                index = text.index(index, offsetBy: 6)
+                continue
+            }
+
+            if remaining.hasPrefix("[[I]]") {
+                appendBufferIfNeeded()
+                isItalic = true
+                index = text.index(index, offsetBy: 5)
+                continue
+            }
+
+            if remaining.hasPrefix("[[/I]]") {
+                appendBufferIfNeeded()
+                isItalic = false
+                index = text.index(index, offsetBy: 6)
+                continue
+            }
+
+            buffer.append(text[index])
+            index = text.index(after: index)
+        }
+
+        appendBufferIfNeeded()
+
+        return segments
+    }
+
+    private func preferredHeaderImageURL(for relatedArticle: SpotlightRelatedArticle) -> String {
+        if let ogImageURL = buildPixivisionOGImageURL(from: relatedArticle.articleUrl) {
+            return ogImageURL
+        }
+        return relatedArticle.thumbnail
+    }
+
+    private func buildPixivisionOGImageURL(from articleURL: String) -> String? {
+        guard let url = URL(string: articleURL) else { return nil }
+
+        let pathParts = url.path.split(separator: "/").map(String.init)
+        guard let articleMarkerIndex = pathParts.firstIndex(of: "a"),
+              pathParts.count > articleMarkerIndex + 1,
+              Int(pathParts[articleMarkerIndex + 1]) != nil else {
+            return nil
+        }
+
+        let supportedLanguages = Set(["zh", "zh-tw", "en", "ja", "ko", "th", "ms"])
+        let language = articleMarkerIndex > 0 && supportedLanguages.contains(pathParts[articleMarkerIndex - 1])
+            ? pathParts[articleMarkerIndex - 1]
+            : "zh"
+        let articleId = pathParts[articleMarkerIndex + 1]
+        return "https://embed.pixiv.net/pixivision/\(language)/a/\(articleId)/ogimage.jpg"
     }
 }
 

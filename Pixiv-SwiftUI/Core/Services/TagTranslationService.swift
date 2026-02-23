@@ -11,6 +11,9 @@ final class TagTranslationService {
     private(set) var timestamp: String = ""
     private(set) var isLoaded: Bool = false
 
+    /// 元标签正则表达式，匹配 "前缀+数字+users入り" 格式
+    private let metaTagRegex = try? NSRegularExpression(pattern: "^(.*?)(\\d+)users入り$", options: [])
+
     private init() {
         loadTranslations()
     }
@@ -41,6 +44,32 @@ final class TagTranslationService {
         return translations[tagName]
     }
 
+    /// 处理元标签（如 xxx100users入り）
+    /// - Parameter tagName: 标签名称
+    /// - Returns: 优化后的翻译，如果不是元标签格式则返回 nil
+    private func getMetaTagTranslation(for tagName: String) -> String? {
+        guard let regex = metaTagRegex else { return nil }
+
+        let range = NSRange(tagName.startIndex..., in: tagName)
+        guard let match = regex.firstMatch(in: tagName, options: [], range: range) else {
+            return nil
+        }
+
+        guard let prefixRange = Range(match.range(at: 1), in: tagName),
+              let numberRange = Range(match.range(at: 2), in: tagName) else {
+            return nil
+        }
+
+        let prefix = String(tagName[prefixRange])
+        let number = String(tagName[numberRange])
+
+        guard !prefix.isEmpty else { return nil }
+
+        let prefixTranslation = getTranslation(for: prefix) ?? prefix
+
+        return "\(prefixTranslation)\(number)用户收藏"
+    }
+
     /// 获取显示的翻译（优先本地，其次官方）
     /// - Parameters:
     ///   - tagName: 标签名称
@@ -54,6 +83,9 @@ final class TagTranslationService {
         case 1:
             return officialTranslation
         case 2:
+            if let metaTranslation = getMetaTagTranslation(for: tagName) {
+                return metaTranslation
+            }
             if let localTranslation = getTranslation(for: tagName) {
                 return localTranslation
             }

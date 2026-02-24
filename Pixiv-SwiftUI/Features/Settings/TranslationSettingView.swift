@@ -52,6 +52,7 @@ struct TranslationSettingView: View {
     @State private var toastMessage: String = ""
     @State private var showToast: Bool = false
     @State private var showClearCacheConfirmation: Bool = false
+    @State private var showNovelTranslationSettings: Bool = false
 
     var body: some View {
         Form {
@@ -60,6 +61,7 @@ struct TranslationSettingView: View {
             languageSection
             tagTranslationDisplayModeSection
             serviceConfigSection
+            novelTranslationSection
             cacheSection
         }
         .formStyle(.grouped)
@@ -78,7 +80,34 @@ struct TranslationSettingView: View {
         } message: {
             Text(String(localized: "确定要清除所有小说翻译缓存吗？此操作不可撤销。"))
         }
+        .sheet(isPresented: $showNovelTranslationSettings) {
+            NavigationStack {
+                NovelTranslationSettingView()
+            }
+        }
         .toast(isPresented: $showToast, message: toastMessage)
+    }
+
+    @ViewBuilder
+    private var novelTranslationSection: some View {
+        if primaryServiceId == "openai" {
+            Section {
+                Button {
+                    showNovelTranslationSettings = true
+                } label: {
+                    HStack {
+                        Text(String(localized: "小说翻译优化"))
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(.secondary)
+                    }
+                }
+            } header: {
+                Text(String(localized: "小说翻译"))
+            } footer: {
+                Text(String(localized: "配置小说场景的批量翻译策略、上下文和并发控制。"))
+            }
+        }
     }
 
     private var tapToTranslateSection: some View {

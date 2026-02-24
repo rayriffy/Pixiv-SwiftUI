@@ -824,6 +824,31 @@ final class UserSettingStore {
         try saveSetting()
     }
 
+    func setTranslateNovelBatchEnabled(_ enabled: Bool) throws {
+        userSetting.translateNovelBatchEnabled = enabled
+        try saveSetting()
+    }
+
+    func setTranslateNovelBatchMaxParagraphs(_ count: Int) throws {
+        userSetting.translateNovelBatchMaxParagraphs = count
+        try saveSetting()
+    }
+
+    func setTranslateNovelBatchMaxCharacters(_ count: Int) throws {
+        userSetting.translateNovelBatchMaxCharacters = count
+        try saveSetting()
+    }
+
+    func setTranslateNovelContextParagraphs(_ count: Int) throws {
+        userSetting.translateNovelContextParagraphs = count
+        try saveSetting()
+    }
+
+    func setTranslateNovelMaxConcurrentBatches(_ count: Int) throws {
+        userSetting.translateNovelMaxConcurrentBatches = count
+        try saveSetting()
+    }
+
     func setTagTranslationDisplayMode(_ mode: Int) throws {
         userSetting.tagTranslationDisplayMode = mode
         try saveSetting()

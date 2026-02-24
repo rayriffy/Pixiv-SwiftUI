@@ -45,6 +45,17 @@ final class NovelReaderStore {
     private let progressKey = "novel_reader_progress_"
     private let settingsKey = "novel_reader_settings"
 
+    private struct NovelTranslationBatchPlan: Sendable {
+        let paragraphIndices: [Int]
+        let inputs: [NovelBatchInput]
+        let context: [String]
+    }
+
+    private enum NovelBatchTaskResult: Sendable {
+        case success(indices: [Int], translations: [Int: String])
+        case failed(indices: [Int], message: String)
+    }
+
     var novel: NovelReaderContent? {
         content
     }
@@ -93,15 +104,7 @@ final class NovelReaderStore {
             guard !Task.isCancelled else { return }
 
             if isTranslationEnabled {
-                for index in visibleParagraphIndices.sorted() where index < spans.count {
-                    let span = spans[index]
-                    if span.type == .normal &&
-                       !span.content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-                       translatedParagraphs[index] == nil &&
-                       !translatingIndices.contains(index) {
-                        await translateParagraph(index, text: span.content)
-                    }
-                }
+                await startTranslationForVisibleParagraphs()
             }
         }
     }
@@ -207,13 +210,255 @@ final class NovelReaderStore {
     }
 
     private func startTranslationForVisibleParagraphs() async {
-        for index in visibleParagraphIndices.sorted() where index < spans.count {
+        let setting = UserSettingStore.shared.userSetting
+        let serviceId = setting.translatePrimaryServiceId
+        let targetLanguage = setting.translateTargetLanguage.isEmpty ? "zh-CN" : setting.translateTargetLanguage
+        let sortedIndices = visibleParagraphIndices.sorted()
+        let pendingIndices = await collectPendingParagraphIndices(
+            from: sortedIndices,
+            serviceId: serviceId,
+            targetLanguage: targetLanguage
+        )
+
+        guard !pendingIndices.isEmpty else { return }
+
+        if shouldUseOpenAIBatchTranslation(serviceId: serviceId, setting: setting) {
+            let plans = buildBatchPlans(indices: pendingIndices, setting: setting)
+            if plans.isEmpty {
+                return
+            }
+            await executeBatchPlans(
+                plans,
+                setting: setting,
+                serviceId: serviceId,
+                targetLanguage: targetLanguage
+            )
+        } else {
+            for index in pendingIndices {
+                await translateParagraph(index, text: spans[index].content)
+            }
+        }
+    }
+
+    private func shouldUseOpenAIBatchTranslation(serviceId: String, setting: UserSetting) -> Bool {
+        serviceId == "openai" && setting.translateNovelBatchEnabled
+    }
+
+    private func collectPendingParagraphIndices(
+        from indices: [Int],
+        serviceId: String,
+        targetLanguage: String
+    ) async -> [Int] {
+        var pending: [Int] = []
+
+        for index in indices where index < spans.count {
             let span = spans[index]
-            if span.type == .normal &&
-               !span.content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-               translatedParagraphs[index] == nil &&
-               !translatingIndices.contains(index) {
-                await translateParagraph(index, text: span.content)
+            let text = span.content
+            if span.type != .normal || text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                continue
+            }
+            if translatedParagraphs[index] != nil || translatingIndices.contains(index) {
+                continue
+            }
+
+            if let cached = await cacheStore.get(
+                novelId: novelId,
+                paragraphIndex: index,
+                originalText: text,
+                serviceId: serviceId,
+                targetLanguage: targetLanguage
+            ) {
+                translatedParagraphs[index] = cached
+                continue
+            }
+
+            pending.append(index)
+        }
+
+        return pending
+    }
+
+    private func buildBatchPlans(indices: [Int], setting: UserSetting) -> [NovelTranslationBatchPlan] {
+        let maxParagraphs = max(1, setting.translateNovelBatchMaxParagraphs)
+        let maxCharacters = max(500, setting.translateNovelBatchMaxCharacters)
+        let contextCount = max(0, setting.translateNovelContextParagraphs)
+
+        var groups: [[Int]] = []
+        var currentGroup: [Int] = []
+
+        for index in indices {
+            if let last = currentGroup.last, index != last + 1 {
+                groups.append(currentGroup)
+                currentGroup = [index]
+            } else {
+                currentGroup.append(index)
+            }
+        }
+        if !currentGroup.isEmpty {
+            groups.append(currentGroup)
+        }
+
+        var plans: [NovelTranslationBatchPlan] = []
+
+        for group in groups {
+            var currentIndices: [Int] = []
+            var currentInputs: [NovelBatchInput] = []
+            var currentCharacters = 0
+
+            func flushCurrentBatch() {
+                guard !currentIndices.isEmpty else { return }
+                let context = contextParagraphs(before: currentIndices[0], count: contextCount)
+                plans.append(
+                    NovelTranslationBatchPlan(
+                        paragraphIndices: currentIndices,
+                        inputs: currentInputs,
+                        context: context
+                    )
+                )
+                currentIndices.removeAll(keepingCapacity: true)
+                currentInputs.removeAll(keepingCapacity: true)
+                currentCharacters = 0
+            }
+
+            for index in group {
+                let text = spans[index].content
+                let count = text.count
+
+                if !currentIndices.isEmpty &&
+                    (currentIndices.count >= maxParagraphs || currentCharacters + count > maxCharacters) {
+                    flushCurrentBatch()
+                }
+
+                currentIndices.append(index)
+                currentInputs.append(NovelBatchInput(id: index, text: text))
+                currentCharacters += count
+            }
+
+            flushCurrentBatch()
+        }
+
+        return plans
+    }
+
+    private func contextParagraphs(before firstIndex: Int, count: Int) -> [String] {
+        guard count > 0 else { return [] }
+
+        var context: [String] = []
+        var currentIndex = firstIndex - 1
+
+        while currentIndex >= 0 && context.count < count {
+            let span = spans[currentIndex]
+            let text = span.content.trimmingCharacters(in: .whitespacesAndNewlines)
+            if span.type == .normal && !text.isEmpty {
+                context.append(span.content)
+            }
+            currentIndex -= 1
+        }
+
+        return context.reversed()
+    }
+
+    private func executeBatchPlans(
+        _ plans: [NovelTranslationBatchPlan],
+        setting: UserSetting,
+        serviceId: String,
+        targetLanguage: String
+    ) async {
+        let maxConcurrent = min(max(1, setting.translateNovelMaxConcurrentBatches), 4)
+        let baseURL = setting.translateOpenAIBaseURL.isEmpty ? "https://api.openai.com/v1" : setting.translateOpenAIBaseURL
+        let model = setting.translateOpenAIModel.isEmpty ? "gpt-5.1-nano" : setting.translateOpenAIModel
+        let apiKey = setting.translateOpenAIApiKey
+        let temperature = setting.translateOpenAITemperature
+
+        var iterator = plans.makeIterator()
+
+        await withTaskGroup(of: NovelBatchTaskResult.self) { group in
+            for _ in 0..<min(maxConcurrent, plans.count) {
+                if let plan = iterator.next() {
+                    for index in plan.paragraphIndices {
+                        translatingIndices.insert(index)
+                    }
+
+                    group.addTask {
+                        do {
+                            let translations = try await NovelBatchTranslator.shared.translateBatch(
+                                paragraphs: plan.inputs,
+                                context: plan.context,
+                                targetLanguage: targetLanguage,
+                                baseURL: baseURL,
+                                apiKey: apiKey,
+                                model: model,
+                                temperature: temperature
+                            )
+                            return .success(indices: plan.paragraphIndices, translations: translations)
+                        } catch {
+                            return .failed(indices: plan.paragraphIndices, message: error.localizedDescription)
+                        }
+                    }
+                }
+            }
+
+            while let result = await group.next() {
+                switch result {
+                case .success(let indices, let translations):
+                    var missingIndices: [Int] = []
+
+                    for index in indices {
+                        if let translated = translations[index], !translated.isEmpty {
+                            translatedParagraphs[index] = translated
+                            await cacheStore.save(
+                                novelId: novelId,
+                                paragraphIndex: index,
+                                originalText: spans[index].content,
+                                translatedText: translated,
+                                serviceId: serviceId,
+                                targetLanguage: targetLanguage
+                            )
+                        } else {
+                            missingIndices.append(index)
+                        }
+                        translatingIndices.remove(index)
+                    }
+
+                    for index in missingIndices {
+                        await translateParagraph(index, text: spans[index].content)
+                    }
+
+                case .failed(let indices, let message):
+                    translationError = "批量翻译失败，已回退单段翻译"
+                    print("Batch translation failed: \(message)")
+
+                    for index in indices {
+                        translatingIndices.remove(index)
+                    }
+
+                    for index in indices {
+                        await translateParagraph(index, text: spans[index].content)
+                    }
+                }
+
+                if let next = iterator.next() {
+                    for index in next.paragraphIndices {
+                        translatingIndices.insert(index)
+                    }
+
+                    group.addTask {
+                        do {
+                            let translations = try await NovelBatchTranslator.shared.translateBatch(
+                                paragraphs: next.inputs,
+                                context: next.context,
+                                targetLanguage: targetLanguage,
+                                baseURL: baseURL,
+                                apiKey: apiKey,
+                                model: model,
+                                temperature: temperature
+                            )
+                            return .success(indices: next.paragraphIndices, translations: translations)
+                        } catch {
+                            return .failed(indices: next.paragraphIndices, message: error.localizedDescription)
+                        }
+                    }
+                }
             }
         }
     }
@@ -222,30 +467,13 @@ final class NovelReaderStore {
         guard !isTranslatingAll else { return }
         translationError = nil
         isTranslatingAll = true
-
-        let maxConcurrent = 4
-        var activeTasks: [Int: Task<Void, Never>] = [:]
+        defer { isTranslatingAll = false }
 
         for (index, span) in spans.enumerated() {
             if span.type == .normal && !span.content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                while activeTasks.count >= maxConcurrent {
-                    try? await Task.sleep(nanoseconds: 10_000_000)
-                }
-
-                if translatedParagraphs[index] == nil && !translatingIndices.contains(index) {
-                    let task = Task {
-                        await translateParagraph(index, text: span.content)
-                    }
-                    activeTasks[index] = task
-                }
+                await translateParagraph(index, text: span.content)
             }
         }
-
-        for (_, task) in activeTasks {
-            await task.value
-        }
-
-        isTranslatingAll = false
     }
 
 private func performTranslation(text: String, serviceId: String, targetLanguage: String) async throws -> String {

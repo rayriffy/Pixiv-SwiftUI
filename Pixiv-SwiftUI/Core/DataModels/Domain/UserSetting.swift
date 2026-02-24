@@ -197,6 +197,21 @@ final class UserSetting: Codable {
     /// 是否启用轻触翻译
     var translateTapToTranslate: Bool = false
 
+    /// 小说场景是否启用 OpenAI 批量翻译
+    var translateNovelBatchEnabled: Bool = true
+
+    /// 小说批量翻译每批最大段落数
+    var translateNovelBatchMaxParagraphs: Int = 8
+
+    /// 小说批量翻译每批最大字符数
+    var translateNovelBatchMaxCharacters: Int = 4_000
+
+    /// 小说批量翻译附带的前文上下文段落数
+    var translateNovelContextParagraphs: Int = 2
+
+    /// 小说批量翻译最大并发批次
+    var translateNovelMaxConcurrentBatches: Int = 2
+
     /// Tag翻译显示模式：0=不显示译文 1=仅显示官方译文 2=使用本地的优化译文
     var tagTranslationDisplayMode: Int = 2
 
@@ -301,6 +316,11 @@ final class UserSetting: Codable {
         case translateTencentProjectId
         case translatePrimaryServiceId
         case translateTapToTranslate
+        case translateNovelBatchEnabled
+        case translateNovelBatchMaxParagraphs
+        case translateNovelBatchMaxCharacters
+        case translateNovelContextParagraphs
+        case translateNovelMaxConcurrentBatches
         case tagTranslationDisplayMode
         case downloadQuality
         case createAuthorFolder
@@ -389,6 +409,11 @@ final class UserSetting: Codable {
         self.translateTencentProjectId = try container.decodeIfPresent(String.self, forKey: .translateTencentProjectId) ?? "0"
         self.translatePrimaryServiceId = try container.decodeIfPresent(String.self, forKey: .translatePrimaryServiceId) ?? "bing"
         self.translateTapToTranslate = try container.decodeIfPresent(Bool.self, forKey: .translateTapToTranslate) ?? false
+        self.translateNovelBatchEnabled = try container.decodeIfPresent(Bool.self, forKey: .translateNovelBatchEnabled) ?? true
+        self.translateNovelBatchMaxParagraphs = try container.decodeIfPresent(Int.self, forKey: .translateNovelBatchMaxParagraphs) ?? 8
+        self.translateNovelBatchMaxCharacters = try container.decodeIfPresent(Int.self, forKey: .translateNovelBatchMaxCharacters) ?? 4_000
+        self.translateNovelContextParagraphs = try container.decodeIfPresent(Int.self, forKey: .translateNovelContextParagraphs) ?? 2
+        self.translateNovelMaxConcurrentBatches = try container.decodeIfPresent(Int.self, forKey: .translateNovelMaxConcurrentBatches) ?? 2
         self.tagTranslationDisplayMode = try container.decodeIfPresent(Int.self, forKey: .tagTranslationDisplayMode) ?? 2
         self.downloadQuality = try container.decodeIfPresent(Int.self, forKey: .downloadQuality) ?? 2
         self.createAuthorFolder = try container.decodeIfPresent(Bool.self, forKey: .createAuthorFolder) ?? true
@@ -468,6 +493,11 @@ final class UserSetting: Codable {
         try container.encode(translateTencentProjectId, forKey: .translateTencentProjectId)
         try container.encode(translatePrimaryServiceId, forKey: .translatePrimaryServiceId)
         try container.encode(translateTapToTranslate, forKey: .translateTapToTranslate)
+        try container.encode(translateNovelBatchEnabled, forKey: .translateNovelBatchEnabled)
+        try container.encode(translateNovelBatchMaxParagraphs, forKey: .translateNovelBatchMaxParagraphs)
+        try container.encode(translateNovelBatchMaxCharacters, forKey: .translateNovelBatchMaxCharacters)
+        try container.encode(translateNovelContextParagraphs, forKey: .translateNovelContextParagraphs)
+        try container.encode(translateNovelMaxConcurrentBatches, forKey: .translateNovelMaxConcurrentBatches)
         try container.encode(tagTranslationDisplayMode, forKey: .tagTranslationDisplayMode)
         try container.encode(downloadQuality, forKey: .downloadQuality)
         try container.encode(createAuthorFolder, forKey: .createAuthorFolder)

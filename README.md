@@ -140,7 +140,7 @@ sudo xattr -rd com.apple.quarantine /Applications/Pixiv-SwiftUI.app
 
 点击对应连接跳转到截图页查看。
 
-iOS | iPadOS | [macOS](./docs/screenshots/macos.md)
+[iOS](./docs/screenshots/ios.md) | iPadOS | [macOS](./docs/screenshots/macos.md)
 
 ---
 

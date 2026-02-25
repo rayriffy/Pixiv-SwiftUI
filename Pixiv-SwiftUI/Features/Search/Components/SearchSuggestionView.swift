@@ -57,8 +57,9 @@ struct SearchSuggestionView: View {
             }
 
             // 标签建议部分
-            Section("标签建议") {
-                ForEach(store.suggestions) { tag in
+            if !store.suggestions.isEmpty {
+                Section("标签建议") {
+                    ForEach(store.suggestions) { tag in
                     Button {
                         let words = store.searchText.split(separator: " ")
                         var newText = ""
@@ -118,6 +119,18 @@ struct SearchSuggestionView: View {
                     }
                 }
             }
+        }
+
+        // 增加底部留白，防止 iOS 键盘及输入框遮挡
+            #if os(iOS)
+            if !store.suggestions.isEmpty || extractedNumber != nil {
+                Section {
+                    Color.clear
+                        .frame(height: 60)
+                        .listRowBackground(Color.clear)
+                }
+            }
+            #endif
         }
     }
 

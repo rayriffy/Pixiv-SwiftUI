@@ -45,16 +45,6 @@ struct SearchView: View {
         return result
     }
 
-    private var extractedNumber: Int? {
-        let pattern = #"\b(\d+)\b"#
-        if let regex = try? NSRegularExpression(pattern: pattern),
-           let match = regex.firstMatch(in: store.searchText, range: NSRange(store.searchText.startIndex..., in: store.searchText)),
-           let range = Range(match.range(at: 1), in: store.searchText) {
-            return Int(store.searchText[range])
-        }
-        return nil
-    }
-
     private func copyToClipboard(_ text: String) {
         #if canImport(UIKit)
         UIPasteboard.general.string = text
@@ -563,106 +553,23 @@ struct SearchView: View {
         }
     }
 
-    private func suggestionRow(_ tag: UnifiedSearchSuggestion) -> some View {
-        HStack {
-            Image(systemName: tag.isLocalMatch ? "checkmark.circle" : "magnifyingglass")
-                .foregroundColor(tag.isLocalMatch ? .accentColor : .secondary)
-                .font(.system(size: 14))
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(tag.tagName)
-                    .foregroundColor(.primary)
-                if let translated = tag.displayTranslation {
-                    Text(translated)
-                        .foregroundColor(.secondary)
-                        .font(.caption)
-                }
-            }
-        }
-        .padding(.vertical, 4)
-    }
-
     private var suggestionList: some View {
         List {
-            if let number = extractedNumber, accountStore.isLoggedIn {
-                Section(String(localized: "ID 快捷跳转")) {
-                    Button(action: {
-                        triggerHaptic()
-                        pendingIllustId = number
-                    }) {
-                        HStack {
-                            Text(String(localized: "查看插画"))
-                            Spacer()
-                            Text(String(number))
-                                .foregroundColor(.secondary)
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(.secondary)
-                        }
-                    }
-
-                    Button(action: {
-                        triggerHaptic()
-                        pendingUserId = String(number)
-                    }) {
-                        HStack {
-                            Text(String(localized: "查看作者"))
-                            Spacer()
-                            Text(String(number))
-                                .foregroundColor(.secondary)
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                }
-            }
-
-            Section(String(localized: "标签建议")) {
-                ForEach(store.suggestions) { tag in
-                    Group {
-                        if accountStore.isLoggedIn {
-                            Button(action: {
-                                let words = store.searchText.split(separator: " ")
-                                var newText = ""
-                                if words.count > 1 {
-                                    newText = String(words.dropLast().joined(separator: " ") + " ")
-                                }
-                                newText += tag.tagName + " "
-                                let completedText = newText.trimmingCharacters(in: .whitespaces)
-                                store.searchText = completedText
-
-                                // 立即触发搜索并记录历史
-                                store.addHistory(completedText)
-                                selectedTag = completedText
-                                path = NavigationPath()
-                                path.append(SearchResultTarget(word: completedText))
-                            }) {
-                                suggestionRow(tag)
-                            }
-                        } else {
-                            suggestionRow(tag)
-                        }
-                    }
-                    .contextMenu {
-                        Button(action: {
-                            copyToClipboard(tag.tagName)
-                        }) {
-                            Label(String(localized: "复制 tag"), systemImage: "doc.on.doc")
-                        }
-
-                        if accountStore.isLoggedIn {
-                            Button(action: {
-                                triggerHaptic()
-                                try? userSettingStore.addBlockedTagWithInfo(tag.tagName, translatedName: tag.displayTranslation)
-                                showBlockToast = true
-                            }) {
-                                Label(String(localized: "屏蔽 tag"), systemImage: "eye.slash")
-                            }
-                        }
-                    }
-                }
-            }
+            SearchSuggestionView(
+                store: store,
+                accountStore: accountStore,
+                pendingIllustId: $pendingIllustId,
+                pendingUserId: $pendingUserId,
+                triggerHaptic: triggerHaptic,
+                copyToClipboard: copyToClipboard,
+                addBlockedTag: { name, translatedName in
+                    try? userSettingStore.addBlockedTagWithInfo(name, translatedName: translatedName)
+                    showBlockToast = true
+                },
+                onSearch: performSearch
+            )
         }
-        .listStyle(.sidebar)
+        .listStyle(.plain)
     }
 }
 

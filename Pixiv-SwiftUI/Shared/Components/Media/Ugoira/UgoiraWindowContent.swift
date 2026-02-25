@@ -31,25 +31,36 @@ struct UgoiraWindowContent: View {
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                VStack(spacing: 16) {
-                    if case .downloading(let progress) = store.status {
-                        CircularProgressView(progress: progress)
-                            .padding()
-                    } else if case .unzipping = store.status {
-                        ProgressView()
-                            .scaleEffect(1.5)
-                        Text("解压中...")
-                            .foregroundColor(.secondary)
-                    } else if case .error(let message) = store.status {
-                        Image(systemName: "exclamationmark.triangle")
-                            .font(.system(size: 48))
-                            .foregroundColor(.orange)
-                        Text(message)
-                            .multilineTextAlignment(.center)
-                        Button("重试") {
-                            store.startDownload()
+                Group {
+                    if case .downloading(let receivedBytes, let totalBytes) = store.status {
+                        VStack {
+                            Spacer()
+                            UgoiraLoadingStatusCard(
+                                state: .downloading(receivedBytes: receivedBytes, totalBytes: totalBytes),
+                                onCancel: { store.cancelDownload() }
+                            )
+                            .padding(.horizontal, 20)
+                            .padding(.bottom, 78)
                         }
-                        .buttonStyle(.borderedProminent)
+                    } else if case .unzipping = store.status {
+                        VStack {
+                            Spacer()
+                            UgoiraLoadingStatusCard(state: .unzipping)
+                                .padding(.horizontal, 20)
+                                .padding(.bottom, 78)
+                        }
+                    } else if case .error(let message) = store.status {
+                        VStack(spacing: 16) {
+                            Image(systemName: "exclamationmark.triangle")
+                                .font(.system(size: 48))
+                                .foregroundColor(.orange)
+                            Text(message)
+                                .multilineTextAlignment(.center)
+                            Button("重试") {
+                                store.startDownload()
+                            }
+                            .buttonStyle(.borderedProminent)
+                        }
                     } else {
                         ProgressView()
                             .scaleEffect(1.5)

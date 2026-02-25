@@ -1956,6 +1956,9 @@
         }
       }
     },
+    "取消下载" : {
+
+    },
     "取消关注" : {
       "localizations" : {
         "en" : {
@@ -5512,6 +5515,7 @@
       }
     },
     "解压中..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

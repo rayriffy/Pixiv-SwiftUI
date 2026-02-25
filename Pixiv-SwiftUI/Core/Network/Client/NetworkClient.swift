@@ -62,10 +62,29 @@ final class NetworkClient {
         headers: [String: String] = [:],
         onProgress: (@Sendable (Double) -> Void)? = nil
     ) async throws -> (URL, URLResponse) {
-        if useDirectConnection {
-            return try await directDownload(from: url, headers: headers, onProgress: onProgress)
+        try await downloadWithByteProgress(from: url, headers: headers) { received, total in
+            guard let onProgress else { return }
+
+            if let total, total > 0 {
+                onProgress(Double(received) / Double(total))
+            } else {
+                let mb = Double(received) / (1024.0 * 1024.0)
+                let pseudoProgress = (1.0 - exp(-mb / 2.0)) * 0.9
+                onProgress(pseudoProgress)
+            }
         }
-        return try await urlSessionDownload(from: url, headers: headers, onProgress: onProgress)
+    }
+
+    /// 下载文件（字节级进度）
+    func downloadWithByteProgress(
+        from url: URL,
+        headers: [String: String] = [:],
+        onProgress: (@Sendable (Int64, Int64?) -> Void)? = nil
+    ) async throws -> (URL, URLResponse) {
+        if useDirectConnection {
+            return try await directDownloadWithByteProgress(from: url, headers: headers, onProgress: onProgress)
+        }
+        return try await urlSessionDownloadWithByteProgress(from: url, headers: headers, onProgress: onProgress)
     }
 
     // MARK: - URLSession 实现
@@ -272,35 +291,61 @@ final class NetworkClient {
         throw NetworkError.httpError(httpResponse.statusCode)
     }
 
-    private func urlSessionDownload(
+    private func urlSessionDownloadWithByteProgress(
         from url: URL,
         headers: [String: String],
-        onProgress: (@Sendable (Double) -> Void)? = nil
+        onProgress: (@Sendable (Int64, Int64?) -> Void)? = nil
     ) async throws -> (URL, URLResponse) {
         var request = URLRequest(url: url)
         for (key, value) in headers {
             request.setValue(value, forHTTPHeaderField: key)
         }
 
-        let (data, response) = try await self.session.data(for: request)
-
-        try Task.checkCancellation()
-
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".tmp")
-        try data.write(to: tempURL)
+        FileManager.default.createFile(atPath: tempURL.path(percentEncoded: false), contents: nil)
 
-        try Task.checkCancellation()
+        let fileHandle = try FileHandle(forWritingTo: tempURL)
+        defer {
+            try? fileHandle.close()
+        }
 
-        // 简单模拟进度，因为 data(for:) 不支持进度回调
-        onProgress?(1.0)
+        do {
+            let (bytes, response) = try await self.session.bytes(for: request)
+            let totalBytes = response.expectedContentLength > 0 ? response.expectedContentLength : nil
 
-        return (tempURL, response)
+            var receivedBytes: Int64 = 0
+            var buffer = Data()
+            buffer.reserveCapacity(64 * 1024)
+
+            for try await byte in bytes {
+                buffer.append(byte)
+                if buffer.count >= 64 * 1024 {
+                    try Task.checkCancellation()
+                    try fileHandle.write(contentsOf: buffer)
+                    receivedBytes += Int64(buffer.count)
+                    onProgress?(receivedBytes, totalBytes)
+                    buffer.removeAll(keepingCapacity: true)
+                }
+            }
+
+            if !buffer.isEmpty {
+                try Task.checkCancellation()
+                try fileHandle.write(contentsOf: buffer)
+                receivedBytes += Int64(buffer.count)
+                onProgress?(receivedBytes, totalBytes)
+            }
+
+            return (tempURL, response)
+        } catch {
+            try? FileManager.default.removeItem(at: tempURL)
+            throw error
+        }
     }
 
-    private func directDownload(
+    private func directDownloadWithByteProgress(
         from url: URL,
         headers: [String: String],
-        onProgress: (@Sendable (Double) -> Void)? = nil
+        onProgress: (@Sendable (Int64, Int64?) -> Void)? = nil
     ) async throws -> (URL, URLResponse) {
         guard let host = url.host else {
             throw NetworkError.invalidResponse
@@ -318,14 +363,7 @@ final class NetworkClient {
             headers: headers,
             timeout: 120, // 下载文件使用 120 秒超时
             onProgress: { received, total in
-                if let total = total, total > 0 {
-                    onProgress?(Double(received) / Double(total))
-                } else {
-                    // 如果无法获取总大小，则显示一个伪进度或每 1MB 增加一点
-                    let mb = Double(received) / (1024.0 * 1024.0)
-                    let pseudoProgress = (1.0 - exp(-mb/2.0)) * 0.9 // 渐近 0.9
-                    onProgress?(pseudoProgress)
-                }
+                onProgress?(received, total)
             }
         )
 
@@ -336,7 +374,8 @@ final class NetworkClient {
 
         try Task.checkCancellation()
 
-        onProgress?(1.0)
+        let totalBytes = httpResponse.expectedContentLength > 0 ? httpResponse.expectedContentLength : nil
+        onProgress?(Int64(data.count), totalBytes)
 
         return (tempURL, httpResponse)
     }

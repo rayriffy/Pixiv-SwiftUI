@@ -11,7 +11,7 @@ import AppKit
 
 enum UgoiraStatus: Equatable {
     case idle
-    case downloading(progress: Double)
+    case downloading(receivedBytes: Int64, totalBytes: Int64?)
     case unzipping
     case ready
     case playing
@@ -21,8 +21,8 @@ enum UgoiraStatus: Equatable {
         switch (lhs, rhs) {
         case (.idle, .idle):
             return true
-        case (.downloading(let p1), .downloading(let p2)):
-            return p1 == p2
+        case (.downloading(let receivedBytes1, let totalBytes1), .downloading(let receivedBytes2, let totalBytes2)):
+            return receivedBytes1 == receivedBytes2 && totalBytes1 == totalBytes2
         case (.unzipping, .unzipping):
             return true
         case (.ready, .ready):
@@ -51,6 +51,10 @@ final class UgoiraStore: ObservableObject {
     private let temporaryDir: URL
     private let cache: ImageCache
     private let userSettingStore: UserSettingStore
+    private var lastProgressUpdateTime = Date.distantPast
+    private var lastProgressReceivedBytes: Int64 = 0
+    private let progressUpdateInterval: TimeInterval = 0.15
+    private let progressUpdateByteStep: Int64 = 256 * 1024
 
     init(illustId: Int, expiration: CacheExpiration = .hours(1)) {
         self.illustId = illustId
@@ -125,7 +129,8 @@ final class UgoiraStore: ObservableObject {
                     metadata = fetchedMetadata
                 }
 
-                status = .downloading(progress: 0)
+                resetProgressTracking()
+                status = .downloading(receivedBytes: 0, totalBytes: nil)
                 let quality = userSettingStore.userSetting.downloadQuality
                 let zipURL = metadata.zipUrls.url(for: quality)
                 Logger.ugoira.debug("开始下载，quality=\(quality)，zipURL=\(zipURL, privacy: .public)")
@@ -182,12 +187,15 @@ final class UgoiraStore: ObservableObject {
             headers = modifiedRequest.allHTTPHeaderFields ?? [:]
         }
 
-        let (tempURL, response) = try await NetworkClient.shared.download(from: url, headers: headers) { progress in
+        let (tempURL, response) = try await NetworkClient.shared.downloadWithByteProgress(from: url, headers: headers) { receivedBytes, totalBytes in
             Task { @MainActor in
                 guard self.downloadTask != nil else { return }
-                self.status = .downloading(progress: progress)
+                self.updateDownloadProgress(receivedBytes: receivedBytes, totalBytes: totalBytes)
             }
         }
+
+        let downloadedFileSize = ((try? FileManager.default.attributesOfItem(atPath: tempURL.path(percentEncoded: false))[.size]) as? NSNumber)?.int64Value ?? 0
+        updateDownloadProgress(receivedBytes: downloadedFileSize, totalBytes: downloadedFileSize, force: true)
 
         Logger.ugoira.debug("下载响应: \(response)")
 
@@ -202,6 +210,28 @@ final class UgoiraStore: ObservableObject {
 
         try FileManager.default.moveItem(at: tempURL, to: localURL)
         Logger.ugoira.debug("ZIP 文件保存到: \(localURL, privacy: .public)")
+    }
+
+    private func resetProgressTracking() {
+        lastProgressUpdateTime = .distantPast
+        lastProgressReceivedBytes = 0
+    }
+
+    private func updateDownloadProgress(receivedBytes: Int64, totalBytes: Int64?, force: Bool = false) {
+        let now = Date()
+        let bytesDelta = max(0, receivedBytes - lastProgressReceivedBytes)
+        let isCompleted = totalBytes.map { receivedBytes >= $0 } ?? false
+
+        if !force,
+           bytesDelta < progressUpdateByteStep,
+           now.timeIntervalSince(lastProgressUpdateTime) < progressUpdateInterval,
+           !isCompleted {
+            return
+        }
+
+        status = .downloading(receivedBytes: receivedBytes, totalBytes: totalBytes)
+        lastProgressReceivedBytes = receivedBytes
+        lastProgressUpdateTime = now
     }
 
     private func unzip(at zipURL: URL) async throws {

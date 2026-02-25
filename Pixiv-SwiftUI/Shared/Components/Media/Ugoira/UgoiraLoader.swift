@@ -9,6 +9,9 @@ struct UgoiraLoader: View {
     @Environment(UserSettingStore.self) private var userSettingStore
     @State private var showFullscreen = false
     @State private var showPlayer = false
+    @State private var isInlinePlaying = false
+    @State private var shouldAutoStartInlinePlayback = false
+    @State private var lastControlTapTime = Date.distantPast
 
     init(illust: Illusts, expiration: CacheExpiration = .hours(1)) {
         self.illust = illust
@@ -21,19 +24,23 @@ struct UgoiraLoader: View {
     }
 
     var body: some View {
-        ZStack(alignment: .bottomTrailing) {
+        ZStack {
             content
+                .onTapGesture {
+                    guard Date().timeIntervalSince(lastControlTapTime) > 0.35 else {
+                        return
+                    }
+
+                    if store.isReady {
+                        #if os(macOS)
+                        ImageViewerWindowManager.shared.showUgoira(illust: illust, store: store)
+                        #else
+                        showFullscreen = true
+                        #endif
+                    }
+                }
 
             statusOverlay
-        }
-        .onTapGesture {
-            if store.isReady {
-                #if os(macOS)
-                ImageViewerWindowManager.shared.showUgoira(illust: illust, store: store)
-                #else
-                showFullscreen = true
-                #endif
-            }
         }
         #if os(iOS)
         .fullScreenCover(isPresented: $showFullscreen) {
@@ -67,11 +74,8 @@ struct UgoiraLoader: View {
                         frameDelays: store.frameDelays,
                         aspectRatio: aspectRatio,
                         expiration: expiration,
-                        shouldAutoPlay: userSettingStore.userSetting.autoPlayUgoira || showPlayer,
-                        isPlaying: Binding(
-                            get: { store.status == .playing },
-                            set: { _ in }
-                        )
+                        shouldAutoPlay: userSettingStore.userSetting.autoPlayUgoira || shouldAutoStartInlinePlayback,
+                        isPlaying: $isInlinePlaying
                     )
                 } else {
                     thumbnailView
@@ -104,34 +108,27 @@ struct UgoiraLoader: View {
         switch store.status {
         case .idle:
             playButton
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
 
-        case .downloading(let progress):
-            VStack(spacing: 8) {
-                CircularProgressView(progress: progress)
-
-                Button(action: { store.cancelDownload() }) {
-                    Image(systemName: "xmark")
-                        .font(.caption)
-                        .foregroundColor(.white)
-                        .padding(8)
-                        .background(Color.red.opacity(0.8))
-                        .clipShape(Circle())
-                }
-                .buttonStyle(.plain)
-            }
-            .padding(12)
-            .background(.ultraThinMaterial)
-            .cornerRadius(12)
+        case .downloading(let receivedBytes, let totalBytes):
+            UgoiraLoadingStatusCard(
+                state: .downloading(receivedBytes: receivedBytes, totalBytes: totalBytes),
+                onCancel: { store.cancelDownload() }
+            )
+            .padding(.horizontal, 16)
+            .padding(.bottom, 12)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
 
         case .unzipping:
-            CircularProgressView(progress: nil)
-                .padding(12)
-                .background(.ultraThinMaterial)
-                .cornerRadius(12)
+            UgoiraLoadingStatusCard(state: .unzipping)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 12)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
 
         case .ready, .playing:
             if !userSettingStore.userSetting.autoPlayUgoira {
                 playButton
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
             } else {
                 EmptyView()
             }
@@ -147,26 +144,55 @@ struct UgoiraLoader: View {
             }
             .buttonStyle(.plain)
             .padding(12)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         }
     }
 
     private var playButton: some View {
         Button(action: { handlePlayAction() }) {
-            Image(systemName: "play.fill")
+            Image(systemName: isInlinePlaying ? "pause.fill" : "play.fill")
                 .font(.title2)
-                .foregroundColor(.white)
+                .foregroundColor(.black)
                 .padding(12)
-                .background(.ultraThinMaterial)
-                .clipShape(Circle())
+                .background {
+                    if #available(iOS 26.0, macOS 26.0, *) {
+                        Circle()
+                            .fill(.clear)
+                            .glassEffect(.regular, in: Circle())
+                    } else {
+                        Circle()
+                            .fill(.ultraThinMaterial)
+                    }
+                }
         }
         .buttonStyle(.plain)
         .padding(12)
     }
 
     private func handlePlayAction() {
-        showPlayer = true
+        lastControlTapTime = Date()
+
         if !store.isReady {
+            showPlayer = true
+            shouldAutoStartInlinePlayback = true
+            isInlinePlaying = false
             store.startDownload()
+            return
+        }
+
+        if !showPlayer {
+            showPlayer = true
+            shouldAutoStartInlinePlayback = true
+            isInlinePlaying = false
+            return
+        }
+
+        if isInlinePlaying {
+            shouldAutoStartInlinePlayback = false
+            isInlinePlaying = false
+        } else {
+            shouldAutoStartInlinePlayback = true
+            isInlinePlaying = true
         }
     }
 }
@@ -196,8 +222,39 @@ struct UgoiraFullscreenView: View {
                 )
                 .ignoresSafeArea()
             } else {
-                ProgressView()
-                    .tint(.white)
+                Group {
+                    switch store.status {
+                    case .downloading(let receivedBytes, let totalBytes):
+                        UgoiraLoadingStatusCard(
+                            state: .downloading(receivedBytes: receivedBytes, totalBytes: totalBytes),
+                            onCancel: { store.cancelDownload() }
+                        )
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 24)
+
+                    case .unzipping:
+                        UgoiraLoadingStatusCard(state: .unzipping)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                            .padding(.horizontal, 20)
+                            .padding(.bottom, 24)
+
+                    case .error(let message):
+                        VStack(spacing: 12) {
+                            Image(systemName: "exclamationmark.triangle")
+                                .font(.largeTitle)
+                                .foregroundColor(.orange)
+                            Text(message)
+                                .foregroundColor(.white)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal)
+                        }
+
+                    default:
+                        ProgressView()
+                            .tint(.white)
+                    }
+                }
             }
 
             VStack {
@@ -291,31 +348,110 @@ struct UgoiraFullscreenView: View {
     }
 }
 
-struct CircularProgressView: View {
+enum UgoiraLoadingVisualState {
+    case downloading(receivedBytes: Int64, totalBytes: Int64?)
+    case unzipping
+}
+
+struct UgoiraLoadingStatusCard: View {
+    let state: UgoiraLoadingVisualState
+    var onCancel: (() -> Void)?
+    @Environment(ThemeManager.self) var themeManager
+
+    private var titleText: String {
+        switch state {
+        case .downloading:
+            return "下载中"
+        case .unzipping:
+            return "解压中"
+        }
+    }
+
+    private var detailText: String {
+        switch state {
+        case .downloading(let receivedBytes, let totalBytes):
+            let receivedText = NumberFormatter.formatFileSize(receivedBytes)
+            if let totalBytes, totalBytes > 0 {
+                return "已下载 \(receivedText) / \(NumberFormatter.formatFileSize(totalBytes))"
+            }
+            return "已下载 \(receivedText)"
+        case .unzipping:
+            return "正在处理帧缓存"
+        }
+    }
+
+    private var progress: Double? {
+        switch state {
+        case .downloading(let receivedBytes, let totalBytes):
+            guard let totalBytes, totalBytes > 0 else { return nil }
+            return min(max(Double(receivedBytes) / Double(totalBytes), 0), 1)
+        case .unzipping:
+            return nil
+        }
+    }
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 12) {
+            UgoiraProgressIndicator(progress: progress)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(titleText)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+
+                Text(detailText)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            if let onCancel {
+                Spacer(minLength: 8)
+                Button(action: onCancel) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title3)
+                        .foregroundColor(.secondary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("取消下载")
+            }
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
+        .background {
+            if #available(iOS 26.0, macOS 26.0, *) {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(.clear)
+                    .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            } else {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(.ultraThinMaterial)
+            }
+        }
+    }
+}
+
+struct UgoiraProgressIndicator: View {
     let progress: Double?
     @Environment(ThemeManager.self) var themeManager
 
     var body: some View {
-        ZStack {
-            Circle()
-                .stroke(Color.gray.opacity(0.3), lineWidth: 4)
-                .frame(width: 50, height: 50)
+        Group {
+            if let progress {
+                ZStack {
+                    Circle()
+                        .stroke(Color.gray.opacity(0.25), lineWidth: 3)
 
-            Circle()
-                .trim(from: 0, to: CGFloat(progress ?? 0))
-                .stroke(themeManager.currentColor, style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                .frame(width: 50, height: 50)
-                .rotationEffect(.degrees(-90))
-                .animation(.easeInOut(duration: 0.2), value: progress ?? 0)
-
-            if let progress = progress {
-                Text("\(Int(progress * 100))%")
-                    .font(.caption2)
-                    .fontWeight(.medium)
-                    .foregroundColor(.primary)
+                    Circle()
+                        .trim(from: 0, to: CGFloat(progress))
+                        .stroke(themeManager.currentColor, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                }
+                .animation(.easeInOut(duration: 0.2), value: progress)
+                .frame(width: 28, height: 28)
             } else {
                 ProgressView()
-                    .scaleEffect(0.5)
+                    .controlSize(.small)
+                    .frame(width: 28, height: 28)
             }
         }
     }

@@ -1,6 +1,7 @@
 #! /bin/zsh
 
 set -e
+setopt pipefail
 
 VERBOSE=false
 SHOW_HELP=false
@@ -48,28 +49,32 @@ if [ "$VERBOSE" = true ]; then
 fi
 
 JOBS=$(sysctl -n hw.ncpu)
+DERIVED_DATA_PATH="build/derived_data"
+
+# 确保 build 目录存在
+mkdir -p build
+
+XCODEBUILD_CMD=(
+    xcodebuild
+    -project Pixiv-SwiftUI.xcodeproj
+    -scheme Release
+    -sdk iphoneos
+    -configuration Release
+    -destination 'generic/platform=iOS'
+    -derivedDataPath "$DERIVED_DATA_PATH"
+    CODE_SIGNING_ALLOWED=NO
+    CODE_SIGNING_REQUIRED=NO
+    CODE_SIGN_IDENTITY=""
+    -jobs "$JOBS"
+)
+
+echo "正在运行 xcodebuild (iOS)..."
 
 if [ "$CLEAN" = true ]; then
-    xcodebuild clean build \
-        -project Pixiv-SwiftUI.xcodeproj \
-        -scheme Release \
-        -sdk iphoneos \
-        -configuration Release \
-        CODE_SIGNING_ALLOWED=NO \
-        CODE_SIGNING_REQUIRED=NO \
-        CODE_SIGN_IDENTITY="" \
-        -jobs $JOBS \
+    "${XCODEBUILD_CMD[@]}" clean build \
         2>&1 | grep -v "^\*" | grep -v "^Build" | grep -v "^CompileC" | grep -v "^Ld " | grep -v "^ProcessInfoPlistFile" | grep -v "^CopyStringsFile" | grep -v "^CpResource" | grep -v "^Touch" | grep -v "^GenerateDSYMFile" | grep -v "^Archive" > "$BUILD_OUTPUT"
 else
-    xcodebuild build \
-        -project Pixiv-SwiftUI.xcodeproj \
-        -scheme Release \
-        -sdk iphoneos \
-        -configuration Release \
-        CODE_SIGNING_ALLOWED=NO \
-        CODE_SIGNING_REQUIRED=NO \
-        CODE_SIGN_IDENTITY="" \
-        -jobs $JOBS \
+    "${XCODEBUILD_CMD[@]}" build \
         2>&1 | grep -v "^\*" | grep -v "^Build" | grep -v "^CompileC" | grep -v "^Ld " | grep -v "^ProcessInfoPlistFile" | grep -v "^CopyStringsFile" | grep -v "^CpResource" | grep -v "^Touch" | grep -v "^GenerateDSYMFile" | grep -v "^Archive" > "$BUILD_OUTPUT"
 fi
 
@@ -78,10 +83,17 @@ echo "编译完成，开始打包..."
 rm -rf build/Payload
 mkdir -p build/Payload
 
-APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "Pixiv-SwiftUI.app" -type d -path "*/Release-iphoneos/*" | head -n 1)
+APP_PATH=$(find "$DERIVED_DATA_PATH" -name "Pixiv-SwiftUI.app" -type d -path "*/Release-iphoneos/*" | head -n 1)
 
 if [ -z "$APP_PATH" ]; then
     echo "错误：找不到 Release-iphoneos 的构建产物"
+    echo "尝试搜索路径: $DERIVED_DATA_PATH"
+    if [ -d "$DERIVED_DATA_PATH" ]; then
+        echo "当前已存在的构建目录清单:"
+        find "$DERIVED_DATA_PATH" -maxdepth 4 -type d
+    else
+        echo "构建目录不存在: $DERIVED_DATA_PATH"
+    fi
     exit 1
 fi
 

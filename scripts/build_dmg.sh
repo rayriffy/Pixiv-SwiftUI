@@ -1,6 +1,7 @@
 #! /bin/zsh
 
 set -e
+setopt pipefail
 
 VERBOSE=false
 SHOW_HELP=false
@@ -43,6 +44,7 @@ CONFIG="Release"
 BUILD_DIR="build"
 DMG_NAME="Pixiv-SwiftUI"
 ARCHS=("arm64" "x86_64")
+DERIVED_DATA_PATH="build/derived_data_macos"
 
 BUILD_OUTPUT="/dev/null"
 if [ "$VERBOSE" = true ]; then
@@ -63,31 +65,28 @@ for ARCH in "${ARCHS[@]}"; do
     echo "开始构建 ${ARCH} 架构"
     echo "=========================================="
 
+    ARCH_DERIVED_DATA_PATH="${DERIVED_DATA_PATH}_${ARCH}"
+
+    XCODEBUILD_CMD=(
+        xcodebuild
+        -project "${PROJECT_NAME}.xcodeproj"
+        -scheme "${SCHEME_NAME}"
+        -sdk macosx
+        -configuration "${CONFIG}"
+        -destination "platform=macOS,arch=${ARCH}"
+        -derivedDataPath "$ARCH_DERIVED_DATA_PATH"
+        ARCHS="${ARCH}"
+        CODE_SIGNING_ALLOWED=YES
+        CODE_SIGNING_REQUIRED=YES
+        CODE_SIGN_IDENTITY="-"
+        -jobs "$JOBS"
+    )
+
     if [ "$CLEAN" = true ]; then
-        xcodebuild clean build \
-            -project "${PROJECT_NAME}.xcodeproj" \
-            -scheme "${SCHEME_NAME}" \
-            -sdk macosx \
-            -configuration "${CONFIG}" \
-            -destination "platform=macOS,arch=${ARCH}" \
-            ARCHS="${ARCH}" \
-            CODE_SIGNING_ALLOWED=YES \
-            CODE_SIGNING_REQUIRED=YES \
-            CODE_SIGN_IDENTITY="-" \
-            -jobs $JOBS \
+        "${XCODEBUILD_CMD[@]}" clean build \
             2>&1 | grep -v "^\*" | grep -v "^Build" | grep -v "^CompileC" | grep -v "^Ld " | grep -v "^ProcessInfoPlistFile" | grep -v "^CopyStringsFile" | grep -v "^CpResource" | grep -v "^Touch" | grep -v "^GenerateDSYMFile" | grep -v "^CodeSign" | grep -v "^CopyFiles" > "$BUILD_OUTPUT"
     else
-        xcodebuild build \
-            -project "${PROJECT_NAME}.xcodeproj" \
-            -scheme "${SCHEME_NAME}" \
-            -sdk macosx \
-            -configuration "${CONFIG}" \
-            -destination "platform=macOS,arch=${ARCH}" \
-            ARCHS="${ARCH}" \
-            CODE_SIGNING_ALLOWED=YES \
-            CODE_SIGNING_REQUIRED=YES \
-            CODE_SIGN_IDENTITY="-" \
-            -jobs $JOBS \
+        "${XCODEBUILD_CMD[@]}" build \
             2>&1 | grep -v "^\*" | grep -v "^Build" | grep -v "^CompileC" | grep -v "^Ld " | grep -v "^ProcessInfoPlistFile" | grep -v "^CopyStringsFile" | grep -v "^CpResource" | grep -v "^Touch" | grep -v "^GenerateDSYMFile" | grep -v "^CodeSign" | grep -v "^CopyFiles" > "$BUILD_OUTPUT"
     fi
 
@@ -95,7 +94,7 @@ echo "编译完成，开始打包..."
 
 mkdir -p "${BUILD_DIR}/dmg_root_${ARCH}"
 
-APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "${PROJECT_NAME}.app" -type d -path "*/Build/Products/${CONFIG}/*" | head -n 1)
+APP_PATH=$(find "$ARCH_DERIVED_DATA_PATH" -name "${PROJECT_NAME}.app" -type d -path "*/Build/Products/${CONFIG}/*" | head -n 1)
 
 if [ -z "$APP_PATH" ]; then
     echo "错误：找不到 ${ARCH} 架构的构建产物"

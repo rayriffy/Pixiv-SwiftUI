@@ -8,6 +8,11 @@ IPA_ONLY=false
 DMG_ONLY=false
 CLEAN=false
 
+# 打印接收到的参数以便调试
+if [[ $# -gt 0 ]]; then
+    echo "收到参数: $@"
+fi
+
 while [[ $# -gt 0 ]]; do
     case $1 in
         -v|--verbose)
@@ -60,6 +65,10 @@ if [ "$IPA_ONLY" = false ] && [ "$DMG_ONLY" = false ]; then
     DMG_ONLY=true
 fi
 
+if [ "$VERBOSE" = true ]; then
+    echo "构建参数: IPA=$IPA_ONLY, DMG=$DMG_ONLY, CLEAN=$CLEAN"
+fi
+
 BUILD_SUCCESS=true
 
 if [ "$IPA_ONLY" = true ]; then
@@ -67,20 +76,17 @@ if [ "$IPA_ONLY" = true ]; then
     echo "=========================================="
     echo ">>> 开始构建 iOS IPA"
     echo "=========================================="
-    IPA_ARGS=""
-    if [ "$VERBOSE" = true ]; then
-        IPA_ARGS="$IPA_ARGS --verbose"
-    fi
-    if [ "$CLEAN" = true ]; then
-        IPA_ARGS="$IPA_ARGS --clean"
-    fi
-    "${SCRIPT_DIR}/build_ipa.sh" $IPA_ARGS
-    IPA_RESULT=$?
-    if [ $IPA_RESULT -ne 0 ]; then
-        BUILD_SUCCESS=false
-        echo ">>> iOS IPA 构建失败"
+    IPA_ARGS=()
+    [[ "$VERBOSE" == "true" ]] && IPA_ARGS+=("-v")
+    [[ "$CLEAN" == "true" ]] && IPA_ARGS+=("--clean")
+    
+    if "${SCRIPT_DIR}/build_ipa.sh" "${IPA_ARGS[@]}"; then
+        echo ">>> iOS IPA 构建成功"
+        IPA_RESULT=0
     else
-        echo ">>> iOS IPA 构建完成"
+        echo ">>> iOS IPA 构建失败"
+        IPA_RESULT=1
+        BUILD_SUCCESS=false
     fi
     echo ""
 fi
@@ -89,20 +95,17 @@ if [ "$DMG_ONLY" = true ]; then
     echo "=========================================="
     echo ">>> 开始构建 macOS DMG"
     echo "=========================================="
-    DMG_ARGS=""
-    if [ "$VERBOSE" = true ]; then
-        DMG_ARGS="$DMG_ARGS --verbose"
-    fi
-    if [ "$CLEAN" = true ]; then
-        DMG_ARGS="$DMG_ARGS --clean"
-    fi
-    "${SCRIPT_DIR}/build_dmg.sh" $DMG_ARGS
-    DMG_RESULT=$?
-    if [ $DMG_RESULT -ne 0 ]; then
-        BUILD_SUCCESS=false
-        echo ">>> macOS DMG 构建失败"
+    DMG_ARGS=()
+    [[ "$VERBOSE" == "true" ]] && DMG_ARGS+=("-v")
+    [[ "$CLEAN" == "true" ]] && DMG_ARGS+=("--clean")
+
+    if "${SCRIPT_DIR}/build_dmg.sh" "${DMG_ARGS[@]}"; then
+        echo ">>> macOS DMG 构建成功"
+        DMG_RESULT=0
     else
-        echo ">>> macOS DMG 构建完成"
+        echo ">>> macOS DMG 构建失败"
+        DMG_RESULT=1
+        BUILD_SUCCESS=false
     fi
     echo ""
 fi

@@ -111,9 +111,15 @@ struct IllustDetailImageSection: View {
             }
             #else
             TabView(selection: $currentPage) {
-                ForEach(Array(imageURLs.enumerated()), id: \.offset) { index, url in
-                    pageImage(url: url, index: index, containerHeight: nil)
-                        .tag(index)
+                ForEach(0..<imageURLs.count, id: \.self) { index in
+                    ZStack {
+                        if abs(index - currentPage) <= 2 {
+                            pageImage(url: imageURLs[index], index: index, containerHeight: nil)
+                        } else {
+                            Color.clear
+                        }
+                    }
+                    .tag(index)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))

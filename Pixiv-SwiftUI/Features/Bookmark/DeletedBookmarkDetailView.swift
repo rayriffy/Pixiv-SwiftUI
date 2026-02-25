@@ -143,9 +143,15 @@ struct DeletedBookmarkDetailView: View {
     private func imageSection(_ illust: Illusts) -> some View {
         if imageURLs.count > 1 {
             TabView(selection: $currentPage) {
-                ForEach(Array(imageURLs.enumerated()), id: \.offset) { index, urlString in
-                    cachedImage(urlString: urlString, aspectRatio: illust.safeAspectRatio)
-                        .tag(index)
+                ForEach(0..<imageURLs.count, id: \.self) { index in
+                    ZStack {
+                        if abs(index - currentPage) <= 2 {
+                            cachedImage(urlString: imageURLs[index], aspectRatio: illust.safeAspectRatio)
+                        } else {
+                            Color.clear
+                        }
+                    }
+                    .tag(index)
                 }
             }
             #if os(iOS)

@@ -32,27 +32,33 @@ struct FullscreenImageView: View {
                     .ignoresSafeArea()
 
                 TabView(selection: $currentPage) {
-                    ForEach(Array(imageURLs.enumerated()), id: \.offset) { index, url in
-                        ZoomableAsyncImage(
-                            urlString: url,
-                            aspectRatio: index < aspectRatios.count ? aspectRatios[index] : nil,
-                            onDismiss: {
-                                isPresented = false
-                            },
-                            isZoomed: $isZoomed,
-                            onDragProgress: { progress in
-                                dragOffset = progress * screenHeight
-                            },
-                            onDragEnded: { shouldDismiss in
-                                if shouldDismiss {
-                                    isPresented = false
-                                } else {
-                                    withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
-                                        dragOffset = 0
+                    ForEach(0..<imageURLs.count, id: \.self) { index in
+                        ZStack {
+                            if abs(index - currentPage) <= 2 {
+                                ZoomableAsyncImage(
+                                    urlString: imageURLs[index],
+                                    aspectRatio: index < aspectRatios.count ? aspectRatios[index] : nil,
+                                    onDismiss: {
+                                        isPresented = false
+                                    },
+                                    isZoomed: $isZoomed,
+                                    onDragProgress: { progress in
+                                        dragOffset = progress * screenHeight
+                                    },
+                                    onDragEnded: { shouldDismiss in
+                                        if shouldDismiss {
+                                            isPresented = false
+                                        } else {
+                                            withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                                                dragOffset = 0
+                                            }
+                                        }
                                     }
-                                }
+                                )
+                            } else {
+                                Color.clear
                             }
-                        )
+                        }
                         .tag(index)
                     }
                 }

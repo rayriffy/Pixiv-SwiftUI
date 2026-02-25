@@ -1,6 +1,7 @@
 import Foundation
 
 /// 搜索相关API
+@MainActor
 final class SearchAPI {
     private let client = NetworkClient.shared
     private let authHeaders: [String: String]

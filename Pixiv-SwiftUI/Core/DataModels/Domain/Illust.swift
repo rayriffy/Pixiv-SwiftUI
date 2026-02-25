@@ -58,6 +58,46 @@ final class Illusts: Codable {
         return metaPages.compactMap { $0.imageUrls?.original ?? $0.imageUrls?.large ?? $0.imageUrls?.medium }
     }
 
+    /// 获取作品的图片URL列表 (用于缓存预取)
+    func getImageURLs(quality: BookmarkCacheQuality, allPages: Bool) -> [String] {
+        var urls: [String] = []
+
+        if pageCount == 1 || !allPages {
+            if let url = getSingleImageURL(quality: quality) {
+                urls.append(url)
+            }
+        } else {
+            for metaPage in metaPages {
+                if let imageUrls = metaPage.imageUrls {
+                    let url: String
+                    switch quality {
+                    case .original:
+                        url = imageUrls.original
+                    case .large:
+                        url = imageUrls.large
+                    case .medium:
+                        url = imageUrls.medium
+                    }
+                    urls.append(url)
+                }
+            }
+        }
+
+        return urls
+    }
+
+    /// 获取单页图片URL
+    func getSingleImageURL(quality: BookmarkCacheQuality) -> String? {
+        switch quality {
+        case .original:
+            return metaSinglePage?.originalImageUrl ?? imageUrls.large
+        case .large:
+            return imageUrls.large
+        case .medium:
+            return imageUrls.medium
+        }
+    }
+
     enum CodingKeys: String, CodingKey {
         case id
         case ownerId
@@ -188,5 +228,3 @@ final class Illusts: Codable {
         try container.encode(restrictionAttributes, forKey: .restrictionAttributes)
     }
 }
-
-extension Illusts: @unchecked Sendable {}

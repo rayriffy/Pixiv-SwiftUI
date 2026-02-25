@@ -160,7 +160,7 @@ class SearchStore {
         let finalWord = word + bookmarkFilter.suffix
 
         do {
-            async let illustsTask = api.searchIllusts(
+            let fetchedIllusts = try await api.searchIllusts(
                 word: finalWord,
                 searchTarget: searchTarget.rawValue,
                 sort: sort,
@@ -169,8 +169,8 @@ class SearchStore {
                 offset: 0,
                 limit: illustLimit
             )
-            async let usersTask = api.getSearchUser(word: word, offset: 0)
-            async let novelsTask = api.searchNovels(
+            let fetchedUsers = try await api.getSearchUser(word: word, offset: 0)
+            let fetchedNovels = try await api.searchNovels(
                 word: finalWord,
                 searchTarget: searchTarget.rawValue,
                 startDate: startDate,
@@ -178,10 +178,6 @@ class SearchStore {
                 offset: 0,
                 limit: novelLimit
             )
-
-            let fetchedIllusts = try await illustsTask
-            let fetchedUsers = try await usersTask
-            let fetchedNovels = try await novelsTask
 
             self.illustResults = fetchedIllusts
             self.userResults = fetchedUsers

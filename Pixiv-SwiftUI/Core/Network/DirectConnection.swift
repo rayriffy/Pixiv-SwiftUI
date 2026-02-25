@@ -55,7 +55,7 @@ actor DirectConnectionHealth {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
-final class DirectConnection: @unchecked Sendable {
+final class DirectConnection: Sendable {
     static let shared = DirectConnection()
 
     private let defaultTimeout: TimeInterval = 30

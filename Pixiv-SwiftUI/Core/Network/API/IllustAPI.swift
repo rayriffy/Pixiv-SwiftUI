@@ -1,6 +1,7 @@
 import Foundation
 
 /// 插画相关API
+@MainActor
 final class IllustAPI {
     private let client = NetworkClient.shared
     private let authHeaders: [String: String]

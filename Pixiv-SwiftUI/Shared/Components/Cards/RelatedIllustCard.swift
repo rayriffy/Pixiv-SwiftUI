@@ -301,11 +301,8 @@ struct RelatedIllustCard: View {
                             let settings = UserSettingStore.shared.userSetting
                             let quality = BookmarkCacheQuality(rawValue: settings.bookmarkCacheQuality) ?? .large
                             let allPages = settings.bookmarkCacheAllPages
-                            try? await BookmarkCacheService.shared.preloadImages(
-                                for: illust,
-                                quality: quality,
-                                allPages: allPages
-                            )
+                            let urls = illust.getImageURLs(quality: quality, allPages: allPages)
+                            try? await BookmarkCacheService.shared.preloadImages(urls: urls)
                             await MainActor.run {
                                 BookmarkCacheStore.shared.updatePreloadStatus(
                                     illustId: illustId,

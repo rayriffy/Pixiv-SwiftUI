@@ -2,6 +2,7 @@ import Foundation
 import CryptoKit
 
 /// 认证相关API
+@MainActor
 final class AuthAPI {
     private let client = NetworkClient.shared
     private var accessToken: String?

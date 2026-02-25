@@ -1,6 +1,7 @@
 import Foundation
 
 /// 小说相关 API
+@MainActor
 final class NovelAPI {
     private let client = NetworkClient.shared
     private let authHeaders: [String: String]

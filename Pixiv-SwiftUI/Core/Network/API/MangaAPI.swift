@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class MangaAPI {
     private let client = NetworkClient.shared
     private let authHeaders: [String: String]

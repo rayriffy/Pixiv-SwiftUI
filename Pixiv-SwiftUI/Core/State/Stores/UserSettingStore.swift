@@ -5,6 +5,7 @@ import Observation
 let spoilerTags: Set<String> = ["ネタバレ", "spoiler", "ネタバレ注意"]
 
 /// 用户设置管理
+@MainActor
 @Observable
 final class UserSettingStore {
     static let shared = UserSettingStore()
@@ -528,89 +529,83 @@ final class UserSettingStore {
         let blockedIllustsList = blockedIllusts
         let spoilerTagsSet = spoilerTags
 
-        let illustData = illusts.map { ($0.id, $0.xRestrict, $0.illustAIType, $0.user.id.stringValue, $0.tags) }
+        let illustData = illusts.map { ($0.id, $0.xRestrict, $0.illustAIType, $0.user.id.stringValue, $0.tags.map { $0.name }) }
 
-        return await withCheckedContinuation { continuation in
-            Task(priority: .userInitiated) {
-                let indicesToKeep = await Task.detached(priority: .userInitiated) {
-                    var indicesToKeep: [Int] = []
-                    indicesToKeep.reserveCapacity(illustData.count)
+        let indicesToKeep = await Task.detached(priority: .userInitiated) {
+            var indicesToKeep: [Int] = []
+            indicesToKeep.reserveCapacity(illustData.count)
 
-                    for (index, data) in illustData.enumerated() {
-                        let (id, xRestrict, aiType, userId, tags) = data
+            for (index, data) in illustData.enumerated() {
+                let (id, xRestrict, aiType, userId, tags) = data
 
-                        // R18 过滤 (xRestrict == 1)
-                        switch r18Mode {
-                        case 2:
-                            if xRestrict == 1 { continue }
-                        case 3:
-                            if xRestrict != 1 { continue }
-                        default:
-                            break
-                        }
+                // R18 过滤 (xRestrict == 1)
+                switch r18Mode {
+                case 2:
+                    if xRestrict == 1 { continue }
+                case 3:
+                    if xRestrict != 1 { continue }
+                default:
+                    break
+                }
 
-                        // R18G 过滤 (xRestrict == 2)
-                        switch r18gMode {
-                        case 2:
-                            if xRestrict == 2 { continue }
-                        case 3:
-                            if xRestrict != 2 { continue }
-                        default:
-                            break
-                        }
+                // R18G 过滤 (xRestrict == 2)
+                switch r18gMode {
+                case 2:
+                    if xRestrict == 2 { continue }
+                case 3:
+                    if xRestrict != 2 { continue }
+                default:
+                    break
+                }
 
-                        // 剧透内容过滤
-                        switch spoilerMode {
-                        case 2:
-                            if tags.contains(where: { spoilerTagsSet.contains($0.name.lowercased()) }) { continue }
-                        case 3:
-                            if !tags.contains(where: { spoilerTagsSet.contains($0.name.lowercased()) }) { continue }
-                        default:
-                            break
-                        }
+                // 剧透内容过滤
+                switch spoilerMode {
+                case 2:
+                    if tags.contains(where: { spoilerTagsSet.contains($0.lowercased()) }) { continue }
+                case 3:
+                    if !tags.contains(where: { spoilerTagsSet.contains($0.lowercased()) }) { continue }
+                default:
+                    break
+                }
 
-                        // AI 过滤
-                        switch aiMode {
-                        case 1:
-                            if aiType == 2 { continue }
-                        case 2:
-                            if aiType != 2 { continue }
-                        default:
-                            break
-                        }
+                // AI 过滤
+                switch aiMode {
+                case 1:
+                    if aiType == 2 { continue }
+                case 2:
+                    if aiType != 2 { continue }
+                default:
+                    break
+                }
 
-                        // 屏蔽标签
-                        if !tagsSet.isEmpty {
-                            if tags.contains(where: { tagsSet.contains($0.name) }) {
-                                continue
-                            }
-                        }
-
-                        // 屏蔽作者
-                        if !blockedUsersList.isEmpty {
-                            if blockedUsersList.contains(userId) {
-                                continue
-                            }
-                        }
-
-                        // 屏蔽插画
-                        if !blockedIllustsList.isEmpty {
-                            if blockedIllustsList.contains(id) {
-                                continue
-                            }
-                        }
-
-                        indicesToKeep.append(index)
+                // 屏蔽标签
+                if !tagsSet.isEmpty {
+                    if tags.contains(where: { tagsSet.contains($0) }) {
+                        continue
                     }
+                }
 
-                    return indicesToKeep
-                }.value
+                // 屏蔽作者
+                if !blockedUsersList.isEmpty {
+                    if blockedUsersList.contains(userId) {
+                        continue
+                    }
+                }
 
-                let filteredResult = indicesToKeep.map { illusts[$0] }
-                continuation.resume(returning: filteredResult)
+                // 屏蔽插画
+                if !blockedIllustsList.isEmpty {
+                    if blockedIllustsList.contains(id) {
+                        continue
+                    }
+                }
+
+                indicesToKeep.append(index)
             }
-        }
-        // swiftlint:enable cyclomatic_complexity
+
+            return indicesToKeep
+        }.value
+
+        return indicesToKeep.map { illusts[$0] }
     }
 
     /// 过滤用户预览列表，根据屏蔽设置
@@ -712,89 +707,83 @@ final class UserSettingStore {
         let blockedNovelsList = blockedNovels
         let spoilerTagsSet = spoilerTags
 
-        let novelData = novels.map { ($0.id, $0.xRestrict, $0.novelAIType, $0.user.id.stringValue, $0.tags) }
+        let novelData = novels.map { ($0.id, $0.xRestrict, $0.novelAIType, $0.user.id.stringValue, $0.tags.map { $0.name }) }
 
-        return await withCheckedContinuation { continuation in
-            Task(priority: .userInitiated) {
-                let indicesToKeep = await Task.detached(priority: .userInitiated) {
-                    var indicesToKeep: [Int] = []
-                    indicesToKeep.reserveCapacity(novelData.count)
+        let indicesToKeep = await Task.detached(priority: .userInitiated) {
+            var indicesToKeep: [Int] = []
+            indicesToKeep.reserveCapacity(novelData.count)
 
-                    for (index, data) in novelData.enumerated() {
-                        let (id, xRestrict, aiType, userId, tags) = data
+            for (index, data) in novelData.enumerated() {
+                let (id, xRestrict, aiType, userId, tags) = data
 
-                        // R18 过滤 (xRestrict == 1)
-                        switch r18Mode {
-                        case 2:
-                            if xRestrict == 1 { continue }
-                        case 3:
-                            if xRestrict != 1 { continue }
-                        default:
-                            break
-                        }
+                // R18 过滤 (xRestrict == 1)
+                switch r18Mode {
+                case 2:
+                    if xRestrict == 1 { continue }
+                case 3:
+                    if xRestrict != 1 { continue }
+                default:
+                    break
+                }
 
-                        // R18G 过滤 (xRestrict == 2)
-                        switch r18gMode {
-                        case 2:
-                            if xRestrict == 2 { continue }
-                        case 3:
-                            if xRestrict != 2 { continue }
-                        default:
-                            break
-                        }
+                // R18G 过滤 (xRestrict == 2)
+                switch r18gMode {
+                case 2:
+                    if xRestrict == 2 { continue }
+                case 3:
+                    if xRestrict != 2 { continue }
+                default:
+                    break
+                }
 
-                        // 剧透内容过滤
-                        switch spoilerMode {
-                        case 2:
-                            if tags.contains(where: { spoilerTagsSet.contains($0.name.lowercased()) }) { continue }
-                        case 3:
-                            if !tags.contains(where: { spoilerTagsSet.contains($0.name.lowercased()) }) { continue }
-                        default:
-                            break
-                        }
+                // 剧透内容过滤
+                switch spoilerMode {
+                case 2:
+                    if tags.contains(where: { spoilerTagsSet.contains($0.lowercased()) }) { continue }
+                case 3:
+                    if !tags.contains(where: { spoilerTagsSet.contains($0.lowercased()) }) { continue }
+                default:
+                    break
+                }
 
-                        // AI 过滤
-                        switch aiMode {
-                        case 1:
-                            if aiType == 2 { continue }
-                        case 2:
-                            if aiType != 2 { continue }
-                        default:
-                            break
-                        }
+                // AI 过滤
+                switch aiMode {
+                case 1:
+                    if aiType == 2 { continue }
+                case 2:
+                    if aiType != 2 { continue }
+                default:
+                    break
+                }
 
-                        // 屏蔽标签
-                        if !tagsSet.isEmpty {
-                            if tags.contains(where: { tagsSet.contains($0.name) }) {
-                                continue
-                            }
-                        }
-
-                        // 屏蔽作者
-                        if !blockedUsersList.isEmpty {
-                            if blockedUsersList.contains(userId) {
-                                continue
-                            }
-                        }
-
-                        // 屏蔽小说
-                        if !blockedNovelsList.isEmpty {
-                            if blockedNovelsList.contains(id) {
-                                continue
-                            }
-                        }
-
-                        indicesToKeep.append(index)
+                // 屏蔽标签
+                if !tagsSet.isEmpty {
+                    if tags.contains(where: { tagsSet.contains($0) }) {
+                        continue
                     }
+                }
 
-                    return indicesToKeep
-                }.value
+                // 屏蔽作者
+                if !blockedUsersList.isEmpty {
+                    if blockedUsersList.contains(userId) {
+                        continue
+                    }
+                }
 
-                let filteredResult = indicesToKeep.map { novels[$0] }
-                continuation.resume(returning: filteredResult)
+                // 屏蔽小说
+                if !blockedNovelsList.isEmpty {
+                    if blockedNovelsList.contains(id) {
+                        continue
+                    }
+                }
+
+                indicesToKeep.append(index)
             }
-        }
-        // swiftlint:enable cyclomatic_complexity
+
+            return indicesToKeep
+        }.value
+
+        return indicesToKeep.map { novels[$0] }
     }
 
     // MARK: - 翻译设置

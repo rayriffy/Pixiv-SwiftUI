@@ -32,9 +32,7 @@ actor BookmarkCacheService {
     // MARK: - 预取图片
 
     /// 预取作品图片
-    func preloadImages(for illust: Illusts, quality: BookmarkCacheQuality, allPages: Bool) async throws {
-        let urls = getImageURLs(for: illust, quality: quality, allPages: allPages)
-
+    func preloadImages(urls: [String]) async throws {
         for urlString in urls {
             try await preloadSingleImage(urlString: urlString)
         }

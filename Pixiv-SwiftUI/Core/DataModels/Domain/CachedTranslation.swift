@@ -13,7 +13,7 @@ struct CachedTranslation: Codable, Sendable {
     }
 }
 
-struct NovelTranslationCacheData: Codable, @unchecked Sendable {
+struct NovelTranslationCacheData: Codable, Sendable {
     let novelId: Int
     var translations: [String: CachedTranslation]
 

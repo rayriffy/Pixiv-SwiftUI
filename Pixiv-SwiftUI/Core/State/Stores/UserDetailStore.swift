@@ -81,13 +81,11 @@ final class UserDetailStore {
         errorMessage = nil
 
         do {
-            async let detail = api.getUserDetail(userId: userId)
-            async let illustsData = api.getUserIllusts(userId: userId, type: "illust")
-            async let mangasData = api.getUserIllusts(userId: userId, type: "manga")
-            async let bookmarksData = api.getUserBookmarksIllusts(userId: userId)
-            async let novelsData = api.getUserNovels(userId: userId)
-
-            let (fetchedDetail, fetchedIllusts, fetchedMangas, fetchedBookmarksResult, fetchedNovelsResult) = try await (detail, illustsData, mangasData, bookmarksData, novelsData)
+            let fetchedDetail = try await api.getUserDetail(userId: userId)
+            let fetchedIllusts = try await api.getUserIllusts(userId: userId, type: "illust")
+            let fetchedMangas = try await api.getUserIllusts(userId: userId, type: "manga")
+            let fetchedBookmarksResult = try await api.getUserBookmarksIllusts(userId: userId)
+            let fetchedNovelsResult = try await api.getUserNovels(userId: userId)
 
             self.userDetail = fetchedDetail
             self.illusts = fetchedIllusts.0

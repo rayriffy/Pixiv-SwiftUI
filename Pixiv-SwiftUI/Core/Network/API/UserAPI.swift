@@ -1,6 +1,7 @@
 import Foundation
 
 /// 用户相关API
+@MainActor
 final class UserAPI {
     private let client = NetworkClient.shared
     private let authHeaders: [String: String]

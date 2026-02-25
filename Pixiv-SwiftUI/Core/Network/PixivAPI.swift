@@ -2,6 +2,7 @@ import Foundation
 import CryptoKit
 
 /// Pixiv API 服务 - 重构后的协调器类
+@MainActor
 final class PixivAPI {
     static let shared = PixivAPI()
 

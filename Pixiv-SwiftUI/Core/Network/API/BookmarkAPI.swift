@@ -1,6 +1,7 @@
 import Foundation
 
 /// 收藏相关API
+@MainActor
 final class BookmarkAPI {
     private let client = NetworkClient.shared
     private let authHeaders: [String: String]

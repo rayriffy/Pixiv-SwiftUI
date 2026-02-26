@@ -10,7 +10,7 @@ struct UpdatesPage: View {
     @Environment(UserSettingStore.self) var settingStore
     var accountStore: AccountStore = AccountStore.shared
 
-    @State private var dynamicColumnCount: Int = 4
+    @State private var dynamicColumnCount: Int = ResponsiveGrid.initialColumnCount(userSetting: UserSettingStore.shared.userSetting)
 
     private var restrictString: String {
         selectedRestrict == .privateAccess ? "private" : "public"

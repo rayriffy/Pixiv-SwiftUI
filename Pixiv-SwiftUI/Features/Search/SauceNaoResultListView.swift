@@ -6,11 +6,7 @@ struct SauceNaoResultListView: View {
     let requestId: UUID
     @State private var store: SauceNaoResultListStore
     @Environment(UserSettingStore.self) private var settingStore
-    #if os(macOS)
-    @State private var dynamicColumnCount: Int = 4
-    #else
-    @State private var dynamicColumnCount: Int = 2
-    #endif
+    @State private var dynamicColumnCount: Int = ResponsiveGrid.initialColumnCount(userSetting: UserSettingStore.shared.userSetting)
 
     init(requestId: UUID) {
         self.requestId = requestId

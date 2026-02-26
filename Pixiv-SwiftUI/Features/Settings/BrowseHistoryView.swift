@@ -22,7 +22,7 @@ struct BrowseHistoryView: View {
     @State private var showingClearAlert = false
     private let batchSize = 20
 
-    @State private var dynamicColumnCount: Int = 4
+    @State private var dynamicColumnCount: Int = ResponsiveGrid.initialColumnCount(userSetting: UserSettingStore.shared.userSetting)
 
     @Environment(AccountStore.self) var accountStore
 

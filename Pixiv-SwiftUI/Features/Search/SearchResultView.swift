@@ -16,11 +16,7 @@ struct SearchResultView: View {
     @Environment(\.dismiss) private var dismiss
     let instanceId = UUID()
 
-    #if os(macOS)
-    @State private var dynamicColumnCount: Int = 4
-    #else
-    @State private var dynamicColumnCount: Int = 2
-    #endif
+    @State private var dynamicColumnCount: Int = ResponsiveGrid.initialColumnCount(userSetting: UserSettingStore.shared.userSetting)
     @State private var userColumnCount: Int = 1
 
     private var viewId: String {

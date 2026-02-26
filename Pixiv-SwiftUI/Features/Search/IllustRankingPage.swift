@@ -8,7 +8,7 @@ struct IllustRankingPage: View {
     @Environment(UserSettingStore.self) var settingStore
     @Environment(AccountStore.self) var accountStore
 
-    @State private var dynamicColumnCount: Int = 4
+    @State private var dynamicColumnCount: Int = ResponsiveGrid.initialColumnCount(userSetting: UserSettingStore.shared.userSetting)
 
     private var rankingTypes: [IllustRankingType] {
         [.daily, .dailyMale, .dailyFemale, .week, .month]

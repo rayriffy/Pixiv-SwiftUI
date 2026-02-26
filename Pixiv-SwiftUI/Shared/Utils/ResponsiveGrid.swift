@@ -40,6 +40,29 @@ enum ResponsiveGrid {
         #endif
     }
 
+    static func initialColumnCount(userSetting: UserSetting) -> Int {
+        #if os(macOS)
+        if !userSetting.hCrossAdapt {
+            return userSetting.hCrossCount
+        }
+        return 4
+        #elseif canImport(UIKit)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            if !userSetting.hCrossAdapt {
+                return userSetting.hCrossCount
+            }
+            return 4
+        } else {
+            if !userSetting.crossAdapt {
+                return userSetting.crossCount
+            }
+            return 2
+        }
+        #else
+        return 2
+        #endif
+    }
+
     static func userColumnCount(for containerWidth: CGFloat) -> Int {
         #if os(macOS)
         switch containerWidth {
@@ -79,6 +102,9 @@ struct ResponsiveGridModifier: ViewModifier {
                         }
                         .onChange(of: proxy.size.width) { _, newWidth in
                             updateColumnCount(for: newWidth)
+                        }
+                        .onChange(of: userSetting) { _, _ in
+                            updateColumnCount(for: lastWidth)
                         }
                         .onChange(of: userSetting?.crossCount) { _, _ in updateColumnCount(for: lastWidth) }
                         .onChange(of: userSetting?.hCrossCount) { _, _ in updateColumnCount(for: lastWidth) }

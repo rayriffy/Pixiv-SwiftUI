@@ -16,7 +16,7 @@ struct BookmarksPage: View {
 
     var initialRestrict: String?
 
-    @State private var dynamicColumnCount: Int = 4
+    @State private var dynamicColumnCount: Int = ResponsiveGrid.initialColumnCount(userSetting: UserSettingStore.shared.userSetting)
 
     private let cache = CacheManager.shared
 

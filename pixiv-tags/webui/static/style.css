@@ -55,21 +55,29 @@ header {
 }
 
 .language-toggle {
-    margin-top: 0;
+    margin-top: 8px;
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 0;
 }
 
 .lang-btn {
-    padding: 8px 24px;
+    padding: 6px 16px;
     border: 2px solid rgba(255, 255, 255, 0.5);
     background: rgba(255, 255, 255, 0.1);
     color: white;
-    border-radius: 20px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     transition: all 0.3s;
+    border-radius: 0;
+}
+
+.lang-btn:first-child {
+    border-radius: 16px 0 0 16px;
+}
+
+.lang-btn:last-child {
+    border-radius: 0 16px 16px 0;
 }
 
 .lang-btn:hover {
@@ -156,14 +164,15 @@ header {
 
 .add-tag-box button {
     width: 100%;
-    padding: 8px;
+    padding: 12px;
     background: #667eea;
     color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 14px;
     transition: background 0.3s;
+    min-height: 44px;
 }
 
 .add-tag-box button:hover {
@@ -342,16 +351,17 @@ main {
 
 .quick-actions button {
     flex: 1;
-    min-width: 120px;
-    padding: 10px 16px;
+    min-width: 100px;
+    padding: 12px 16px;
     border: 2px solid #667eea;
     background: white;
     color: #667eea;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
     transition: all 0.3s;
+    min-height: 44px;
 }
 
 .quick-actions button:hover:not(:disabled) {
@@ -391,18 +401,21 @@ main {
 .nav-buttons {
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .nav-buttons button {
-    padding: 10px 20px;
+    padding: 12px 16px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     background: #f5f5f5;
     color: #666;
     transition: all 0.3s;
+    min-height: 44px;
 }
 
 .nav-buttons button:hover {
@@ -416,7 +429,7 @@ main {
 }
 
 .save-btn {
-    padding: 14px 40px;
+    padding: 16px 40px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -425,6 +438,9 @@ main {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     transition: all 0.3s;
+    min-height: 50px;
+    width: 100%;
+    max-width: 300px;
 }
 
 .save-btn:hover {
@@ -454,57 +470,157 @@ main {
 @media (max-width: 900px) {
     .main-layout {
         flex-direction: column;
-        padding: 0 20px 20px;
+        padding: 0 15px 15px;
+        margin: 15px auto;
     }
 
     .sidebar {
         width: 100%;
         border-right: none;
         border-bottom: 1px solid #eee;
-        height: 300px;
+        height: auto;
+        max-height: 40vh;
         border-radius: 12px 12px 0 0;
     }
 
     .search-results {
-        max-height: 200px;
+        max-height: none;
+        flex: 1;
+        min-height: 100px;
+    }
+
+    .search-results {
+        max-height: 150px;
     }
 
     main {
         border-radius: 0 0 12px 12px;
+        padding: 20px;
     }
 }
 
 @media (max-width: 600px) {
     .main-layout {
-        padding: 0 10px 10px;
+        padding: 0 8px 8px;
+        margin: 10px auto;
     }
 
     header {
-        padding: 20px;
+        padding: 12px 10px;
     }
 
     header h1 {
-        font-size: 22px;
+        font-size: 18px;
+        margin-bottom: 8px;
     }
 
     .stats {
+        font-size: 11px;
+        gap: 6px;
+    }
+
+    .stats span {
+        padding: 4px 8px;
+    }
+
+    .language-toggle {
+        margin-top: 6px;
+    }
+
+    .lang-btn {
+        padding: 5px 12px;
         font-size: 12px;
-        gap: 10px;
     }
 
     main {
-        padding: 20px;
+        padding: 15px;
+        padding-bottom: calc(15px + env(safe-area-inset-bottom, 0px) + 20px);
+    }
+
+    .tag-display {
+        padding: 15px;
+    }
+
+    .field label {
+        font-size: 12px;
+    }
+
+    .field .value {
+        font-size: 16px;
+    }
+
+    #translation-input {
+        font-size: 16px;
+        padding: 12px;
     }
 
     .quick-actions {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+
+    .quick-actions button {
+        flex: 1;
+        min-width: 0;
+        padding: 12px 8px;
+        font-size: 12px;
+        white-space: nowrap;
     }
 
     .navigation {
         flex-direction: column;
+        gap: 15px;
     }
 
-    .navigation button {
+    .nav-group {
         width: 100%;
+    }
+
+    .nav-buttons {
+        width: 100%;
+    }
+
+    .nav-buttons button {
+        flex: 1;
+        min-width: 80px;
+        padding: 12px 10px;
+        font-size: 12px;
+    }
+
+    .save-section {
+        padding-top: 10px;
+    }
+
+    .save-btn {
+        width: 100%;
+        max-width: none;
+    }
+
+    .sidebar {
+        height: auto;
+        max-height: 40vh;
+    }
+
+    .search-results {
+        max-height: none;
+        flex: 1;
+        min-height: 80px;
+    }
+
+    .search-box {
+        padding: 10px;
+    }
+
+    .add-tag-box {
+        padding: 10px;
+    }
+
+    .add-tag-box h3 {
+        font-size: 13px;
+    }
+
+    .add-tag-box input {
+        font-size: 14px;
     }
 }

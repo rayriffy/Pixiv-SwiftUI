@@ -478,16 +478,18 @@ struct SearchView: View {
                     .padding(.horizontal)
                 }
 
-                if !store.recommendedSearchTags.isEmpty && accountStore.isWebLoggedIn {
-                    Text("推荐标签")
-                        .font(.headline)
-                        .padding(.horizontal)
-                        .padding(.top)
+                if accountStore.isWebLoggedIn {
+                    if store.isLoadingRecommendedTags {
+                        SkeletonRecommendedSearchTagsList()
+                    } else if !store.recommendedSearchTags.isEmpty {
+                        Text("推荐标签")
+                            .font(.headline)
+                            .padding(.horizontal)
+                            .padding(.top)
 
-                    HStack(alignment: .top, spacing: 10) {
-                        ForEach(0..<columnCount, id: \.self) { columnIndex in
-                            LazyVStack(spacing: 10) {
-                                ForEach(recommendedSearchTagColumns[columnIndex]) { tag in
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 12) {
+                                ForEach(store.recommendedSearchTags) { tag in
                                     Button(action: {
                                         let searchTag = SearchTag(name: tag.tag, translatedName: tag.translatedName)
                                         store.addHistory(searchTag)
@@ -497,14 +499,14 @@ struct SearchView: View {
                                         path.append(SearchResultTarget(word: tag.tag))
                                     }) {
                                         trendTagContent(tag)
+                                            .frame(width: 140, height: 140)
                                     }
                                     .buttonStyle(.plain)
                                 }
                             }
-                            .frame(maxWidth: .infinity)
+                            .padding(.horizontal)
                         }
                     }
-                    .padding(.horizontal)
                 }
 
                 SpotlightPreview()

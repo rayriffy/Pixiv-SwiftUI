@@ -72,12 +72,13 @@ struct IllustSeriesView: View {
             // Header
             VStack(alignment: .leading, spacing: 12) {
                 if let imageUrl = detail.coverImageUrls?.medium, !imageUrl.isEmpty {
+                    let aspectRatio = (CGFloat(detail.width ?? 1200) / CGFloat(detail.height ?? 630))
                     CachedAsyncImage(
                         urlString: imageUrl,
+                        aspectRatio: aspectRatio,
                         contentMode: .fill
                     )
                     .frame(maxWidth: .infinity)
-                    .frame(height: 200)
                     .clipped()
                     .cornerRadius(12)
                 }

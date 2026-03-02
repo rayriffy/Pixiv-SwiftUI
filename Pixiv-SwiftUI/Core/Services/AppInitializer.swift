@@ -47,5 +47,25 @@ final class AppInitializer {
 
         // 7. 后续任务
         AccountStore.shared.markLoginAttempted()
+
+        // 8. 检查更新（后台执行）
+        checkForUpdateOnLaunch()
+    }
+
+    private func checkForUpdateOnLaunch() {
+        guard userSettingStore?.userSetting.checkUpdateOnLaunch == true else { return }
+
+        Task {
+            if let updateInfo = await UpdateChecker.shared.checkForUpdate() {
+                await MainActor.run {
+                    if updateInfo.isNewerThanCurrent {
+                        NotificationCenter.default.post(
+                            name: .init("ShowUpdateNotification"),
+                            object: updateInfo
+                        )
+                    }
+                }
+            }
+        }
     }
 }

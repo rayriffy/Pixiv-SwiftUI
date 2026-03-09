@@ -269,7 +269,9 @@ final class DirectConnection: Sendable {
                 let finishLock = NSLock()
 
                 @Sendable func finish(with result: Result<(Data, HTTPURLResponse), Error>) {
-                    if isFinished.compareAndSwap(expected: false, desired: true) {
+                    guard isFinished.compareAndSwap(expected: false, desired: true) else { return }
+
+                    connectionQueue.async {
                         finishLock.lock()
                         timeoutTimer.cancel()
 
@@ -445,7 +447,9 @@ final class DirectConnection: Sendable {
                 let finishLock = NSLock()
 
                 @Sendable func finish(with result: Result<HTTPURLResponse, Error>) {
-                    if isFinished.compareAndSwap(expected: false, desired: true) {
+                    guard isFinished.compareAndSwap(expected: false, desired: true) else { return }
+
+                    connectionQueue.async {
                         finishLock.lock()
                         timeoutTimer.cancel()
                         streamHandler.close()

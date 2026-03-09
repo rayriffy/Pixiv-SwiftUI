@@ -126,7 +126,7 @@ final class ImageViewerWindowManager {
     }
 
     func close() {
-        window?.orderOut(nil)
+        window?.close()
         window = nil
         currentTask?.cancel()
         currentTask = nil

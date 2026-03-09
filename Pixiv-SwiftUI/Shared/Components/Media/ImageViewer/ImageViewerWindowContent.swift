@@ -19,6 +19,7 @@ struct ImageViewerWindowContent: View {
     @State private var lastOffset: CGSize = .zero
     @State private var isHoveringTop = false
     @State private var eventMonitor: Any?
+    @State private var viewWindow: NSWindow?
 
     init(illust: Illusts? = nil, imageURLs: [String], aspectRatios: [CGFloat], initialPage: Int, title: String, onClose: @escaping () -> Void) {
         self.illust = illust
@@ -83,6 +84,11 @@ struct ImageViewerWindowContent: View {
         .onHover { hovering in
             isHoveringTop = hovering
         }
+        .background(
+            HostingWindowFinder { window in
+                self.viewWindow = window
+            }
+        )
         .onAppear {
             setupEvents()
         }
@@ -118,9 +124,14 @@ struct ImageViewerWindowContent: View {
     private func setupEvents() {
         eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .scrollWheel]) { [weak NSApp] event in
             // IMPORTANT: Only handle events for the window containing this view.
-            guard let window = event.window,
-                  let currentWindow = NSApp?.keyWindow,
-                  window == currentWindow else { return event }
+            // We use the stored viewWindow instead of keyWindow to prevent blocking other windows.
+            guard let eventWindow = event.window,
+                  let viewWindow = self.viewWindow,
+                  eventWindow == viewWindow else { return event }
+
+            // Ensure this monitor doesn't catch events after it should have been removed
+            // but just in case of race conditions or delay in NSHostingController disposal.
+            if eventMonitor == nil { return event }
 
             if event.type == .scrollWheel {
                 let hasModifier = event.modifierFlags.contains(.command) || event.modifierFlags.contains(.option)
@@ -503,6 +514,27 @@ struct BottomStatusBar: View {
                 Spacer()
             }
             .padding(16)
+        }
+    }
+}
+
+// Helper to find the NSWindow hosting a SwiftUI view
+struct HostingWindowFinder: NSViewRepresentable {
+    var callback: (NSWindow) -> Void
+
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView()
+        DispatchQueue.main.async {
+            if let window = view.window {
+                callback(window)
+            }
+        }
+        return view
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        if let window = nsView.window {
+            callback(window)
         }
     }
 }

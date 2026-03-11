@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 项目文档
+    url: https://github.com/Eslzzyl/Pixiv-SwiftUI#readme
+    about: 查看项目使用说明和功能文档
+  - name: 讨论区
+    url: https://github.com/Eslzzyl/Pixiv-SwiftUI/discussions
+    about: 参与功能讨论和分享使用经验

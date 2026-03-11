@@ -1,0 +1,94 @@
+name: 问题咨询
+description: 询问关于应用使用、功能或其他相关问题
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 欢迎提问！
+        
+        请详细描述您的问题，我们会尽力为您解答。
+        
+        ---
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 请清晰描述您遇到的问题或疑问
+      placeholder: 例如：如何设置自动下载插画？
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: 问题背景
+      description: 请提供问题的相关背景信息
+      placeholder: |
+        我正在尝试批量下载喜欢的插画
+        但找不到自动下载的设置选项
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: 已尝试的解决方案
+      description: 您已经尝试过哪些方法来解决这个问题？
+      placeholder: |
+        查看了设置页面但没有找到相关选项
+        尝试长按插画但只有单张下载选项
+
+  - type: dropdown
+    id: device
+    attributes:
+      label: 设备类型
+      description: 您使用的是什么设备？
+      options:
+        - iPhone
+        - iPad
+        - Mac
+    validations:
+      required: true
+
+  - type: input
+    id: os_version
+    attributes:
+      label: 系统版本
+      description: 您的设备系统版本
+      placeholder: iOS 26.1
+    validations:
+      required: true
+
+  - type: input
+    id: app_version
+    attributes:
+      label: App 版本
+      description: 您使用的 Pixiv-SwiftUI 版本号
+      placeholder: 1.0.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 相关截图
+      description: 如果有相关截图，请提供
+      placeholder: 拖拽图片文件到这里或提供图片链接
+
+  - type: textarea
+    id: additional_info
+    attributes:
+      label: 其他信息
+      description: 任何其他可能有助于解决问题的信息
+      placeholder: 例如网络环境、特定操作时间等
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: 确认事项
+      options:
+        - label: 我已查阅过文档和现有 issue
+          required: true
+        - label: 我理解这可能不是 bug 而是使用问题
+          required: false

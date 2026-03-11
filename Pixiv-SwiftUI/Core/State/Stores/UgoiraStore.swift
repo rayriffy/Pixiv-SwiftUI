@@ -190,7 +190,8 @@ final class UgoiraStore {
             headers = modifiedRequest.allHTTPHeaderFields ?? [:]
         }
 
-        let (tempURL, response) = try await NetworkClient.shared.concurrentDownload(from: url, headers: headers, destinationURL: tmpURL) { receivedBytes, totalBytes in
+        let concurrency = userSettingStore.userSetting.downloadConcurrency
+        let (tempURL, response) = try await NetworkClient.shared.concurrentDownload(from: url, headers: headers, destinationURL: tmpURL, concurrency: concurrency) { receivedBytes, totalBytes in
             Task { @MainActor in
                 guard self.downloadTask != nil else { return }
                 self.updateDownloadProgress(receivedBytes: receivedBytes, totalBytes: totalBytes)

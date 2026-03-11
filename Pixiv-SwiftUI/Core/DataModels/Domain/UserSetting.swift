@@ -54,6 +54,9 @@ final class UserSetting: Codable {
     /// 是否在收藏后跟随用户
     var followAfterStar: Bool = false
 
+    /// 下载分片并发数
+    var downloadConcurrency: Int = 8
+
     /// 收藏后是否保存
     var saveAfterStar: Bool = false
 

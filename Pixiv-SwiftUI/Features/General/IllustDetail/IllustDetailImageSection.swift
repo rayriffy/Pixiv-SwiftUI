@@ -92,7 +92,7 @@ struct IllustDetailImageSection: View {
 
     private var standardImageSection: some View {
         CachedAsyncImage(
-            urlString: ImageURLHelper.getImageURL(from: illust, quality: 2),
+            urlString: ImageURLHelper.getImageURL(from: illust, quality: userSettingStore.userSetting.pictureQuality),
             aspectRatio: illust.safeAspectRatio,
             contentMode: .fit,
             expiration: DefaultCacheExpiration.illustDetail

@@ -336,6 +336,12 @@ final class UgoiraStore {
 
         while offset < data.count {
             try Task.checkCancellation()
+
+            guard offset + 30 <= data.count else {
+                Logger.ugoira.error("ZIP 数据不完整，无法读取本地文件头，offset=\(offset)")
+                throw UgoiraError.unzipFailed
+            }
+
             let header = data.subdata(in: offset..<(offset + 30))
             let headerBytes = [UInt8](header)
 
@@ -357,6 +363,13 @@ final class UgoiraStore {
             let extraEnd = extraStart + Int(extraFieldLength)
             let dataStart = extraEnd
             let dataEnd = dataStart + Int(compressedSize)
+
+                        guard fileNameEnd <= data.count,
+                                    extraEnd <= data.count,
+                                    dataEnd <= data.count else {
+                                Logger.ugoira.error("ZIP 数据不完整，文件边界越界: fileNameEnd=\(fileNameEnd), extraEnd=\(extraEnd), dataEnd=\(dataEnd), total=\(data.count)")
+                                throw UgoiraError.unzipFailed
+                        }
 
             let fileNameData = data.subdata(in: fileNameStart..<fileNameEnd)
             let fileName = String(data: fileNameData, encoding: .utf8) ?? ""

@@ -262,7 +262,7 @@ final class DirectConnection: Sendable {
 
         return try await withTaskCancellationHandler {
             try await withCheckedThrowingContinuation { continuation in
-            let timeoutTimer = DispatchSource.makeTimerSource(queue: connectionQueue)
+                let timeoutTimer = DispatchSource.makeTimerSource(queue: connectionQueue)
                 timeoutTimer.schedule(deadline: .now() + timeout)
 
                 let isFinished = AtomicBool(false)
@@ -275,8 +275,6 @@ final class DirectConnection: Sendable {
                         finishLock.lock()
                         timeoutTimer.cancel()
 
-                        // 彻底断开连接，避免复用带来的 POSIX 96 错误
-                        connection.stateUpdateHandler = nil
                         connection.cancel()
 
                         continuation.resume(with: result)
@@ -336,6 +334,7 @@ final class DirectConnection: Sendable {
                     switch state {
                     case .ready:
                         sendRequest()
+                        receiveNext()
                     case .failed(let error):
                         finish(with: .failure(error))
                     case .cancelled:
@@ -383,7 +382,6 @@ final class DirectConnection: Sendable {
                     }
                 }
 
-                receiveNext()
                 connection.start(queue: connectionQueue)
             }
         } onCancel: {
@@ -453,7 +451,6 @@ final class DirectConnection: Sendable {
                         finishLock.lock()
                         timeoutTimer.cancel()
                         streamHandler.close()
-                        connection.stateUpdateHandler = nil
                         connection.cancel()
                         continuation.resume(with: result)
                         finishLock.unlock()
@@ -506,6 +503,7 @@ final class DirectConnection: Sendable {
                     switch state {
                     case .ready:
                         sendRequest()
+                        receiveNext()
                     case .failed(let error):
                         finish(with: .failure(error))
                     case .cancelled:
@@ -550,7 +548,6 @@ final class DirectConnection: Sendable {
                     }
                 }
 
-                receiveNext()
                 connection.start(queue: connectionQueue)
             }
         } onCancel: {

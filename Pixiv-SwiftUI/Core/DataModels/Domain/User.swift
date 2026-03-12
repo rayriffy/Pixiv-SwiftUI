@@ -169,8 +169,11 @@ final class AccountPersist: Codable, Identifiable {
     @Attribute(.unique) var userId: String
     var id: String { userId }
     var userImage: String
-    var accessToken: String
-    var refreshToken: String
+
+    @Transient var accessToken: String = ""
+    @Transient var refreshToken: String = ""
+    @Transient var webPHPSESSID: String?
+
     var deviceToken: String
     var name: String
     var account: String
@@ -179,7 +182,6 @@ final class AccountPersist: Codable, Identifiable {
     var isPremium: Int
     var xRestrict: Int
     var isMailAuthorized: Int
-    var webPHPSESSID: String?
     var webYuidB: String?
     var webPAbDId: String?
     var webPAbId: String?

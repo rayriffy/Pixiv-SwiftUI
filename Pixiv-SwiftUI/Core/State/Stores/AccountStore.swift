@@ -113,33 +113,78 @@ final class AccountStore {
     @MainActor
     private func updateCurrentAccountFromAccounts() {
         let lastUserId = UserDefaults.standard.string(forKey: lastUserIdKey)
+        let accountToUse: AccountPersist?
+
         if let savedAccount = accounts.first(where: { $0.userId == lastUserId }) {
-            self.currentAccount = savedAccount
-            self.isLoggedIn = true
-            PixivAPI.shared.setAccessToken(savedAccount.accessToken)
-            PixivAPI.shared.setAjaxSessionCookies(
-                phpSessId: savedAccount.webPHPSESSID,
-                yuidB: savedAccount.webYuidB,
-                pAbDId: savedAccount.webPAbDId,
-                pAbId: savedAccount.webPAbId,
-                pAbId2: savedAccount.webPAbId2
-            )
+            accountToUse = savedAccount
         } else if let firstAccount = accounts.first {
-            self.currentAccount = firstAccount
-            self.isLoggedIn = true
-            PixivAPI.shared.setAccessToken(firstAccount.accessToken)
-            PixivAPI.shared.setAjaxSessionCookies(
-                phpSessId: firstAccount.webPHPSESSID,
-                yuidB: firstAccount.webYuidB,
-                pAbDId: firstAccount.webPAbDId,
-                pAbId: firstAccount.webPAbId,
-                pAbId2: firstAccount.webPAbId2
-            )
+            accountToUse = firstAccount
             UserDefaults.standard.set(firstAccount.userId, forKey: lastUserIdKey)
+        } else {
+            accountToUse = nil
+        }
+
+        if let account = accountToUse {
+            self.currentAccount = account
+            self.isLoggedIn = true
+
+            // 从 Keychain 加载令牌
+            loadTokensFromKeychain(for: account)
+
+            PixivAPI.shared.setAccessToken(account.accessToken)
+            PixivAPI.shared.setAjaxSessionCookies(
+                phpSessId: account.webPHPSESSID,
+                yuidB: account.webYuidB,
+                pAbDId: account.webPAbDId,
+                pAbId: account.webPAbId,
+                pAbId2: account.webPAbId2
+            )
         } else {
             self.currentAccount = nil
             self.isLoggedIn = false
             PixivAPI.shared.setAjaxSessionCookies(phpSessId: nil, yuidB: nil, pAbDId: nil, pAbId: nil, pAbId2: nil)
+        }
+    }
+
+    private func loadTokensFromKeychain(for account: AccountPersist) {
+        let userId = account.userId
+        do {
+            if let accessToken = try KeychainHelper.load(service: KeychainHelper.Service.authTokens, account: KeychainHelper.accountKey(userId: userId, type: .accessToken)) {
+                account.accessToken = accessToken
+            }
+            if let refreshToken = try KeychainHelper.load(service: KeychainHelper.Service.authTokens, account: KeychainHelper.accountKey(userId: userId, type: .refreshToken)) {
+                account.refreshToken = refreshToken
+            }
+            if let phpsessid = try KeychainHelper.load(service: KeychainHelper.Service.authTokens, account: KeychainHelper.accountKey(userId: userId, type: .phpsessid)) {
+                account.webPHPSESSID = phpsessid
+            }
+        } catch {
+            print("Failed to load tokens from keychain for \(userId): \(error)")
+        }
+    }
+
+    private func saveTokensToKeychain(for account: AccountPersist) {
+        let userId = account.userId
+        do {
+            try KeychainHelper.save(account.accessToken, service: KeychainHelper.Service.authTokens, account: KeychainHelper.accountKey(userId: userId, type: .accessToken))
+            try KeychainHelper.save(account.refreshToken, service: KeychainHelper.Service.authTokens, account: KeychainHelper.accountKey(userId: userId, type: .refreshToken))
+            if let phpsessid = account.webPHPSESSID {
+                try KeychainHelper.save(phpsessid, service: KeychainHelper.Service.authTokens, account: KeychainHelper.accountKey(userId: userId, type: .phpsessid))
+            } else {
+                try KeychainHelper.delete(service: KeychainHelper.Service.authTokens, account: KeychainHelper.accountKey(userId: userId, type: .phpsessid))
+            }
+        } catch {
+            print("Failed to save tokens to keychain for \(userId): \(error)")
+        }
+    }
+
+    private func deleteTokensFromKeychain(userId: String) {
+        do {
+            try KeychainHelper.delete(service: KeychainHelper.Service.authTokens, account: KeychainHelper.accountKey(userId: userId, type: .accessToken))
+            try KeychainHelper.delete(service: KeychainHelper.Service.authTokens, account: KeychainHelper.accountKey(userId: userId, type: .refreshToken))
+            try KeychainHelper.delete(service: KeychainHelper.Service.authTokens, account: KeychainHelper.accountKey(userId: userId, type: .phpsessid))
+        } catch {
+            print("Failed to delete tokens from keychain for \(userId): \(error)")
         }
     }
 
@@ -207,6 +252,9 @@ final class AccountStore {
         let context = dataContainer.mainContext
         let targetUserId = account.userId
 
+        // 保存到 Keychain
+        saveTokensToKeychain(for: account)
+
         // 检查是否已存在
         let descriptor = FetchDescriptor<AccountPersist>(
             predicate: #Predicate { $0.userId == targetUserId }
@@ -257,6 +305,9 @@ final class AccountStore {
             context.delete(existing)
             try context.save()
         }
+
+        // 从 Keychain 删除
+        deleteTokensFromKeychain(userId: targetUserId)
 
         loadAccounts()
     }

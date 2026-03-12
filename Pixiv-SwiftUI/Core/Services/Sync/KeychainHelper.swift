@@ -46,6 +46,23 @@ enum KeychainHelper {
         }
     }
 
+    // MARK: - Constants
+
+    enum Service {
+        static let webDAV = (Bundle.main.bundleIdentifier ?? "Pixiv-SwiftUI") + ".webdav-sync"
+        static let authTokens = (Bundle.main.bundleIdentifier ?? "com.pixiv.auth.tokens") + ".auth"
+    }
+
+    enum AuthTokenType: String {
+        case accessToken = "access_token"
+        case refreshToken = "refresh_token"
+        case phpsessid = "phpsessid"
+    }
+
+    static func accountKey(userId: String, type: AuthTokenType) -> String {
+        "\(userId).\(type.rawValue)"
+    }
+
     private static func baseQuery(service: String, account: String) -> [String: Any] {
         [
             kSecClass as String: kSecClassGenericPassword,

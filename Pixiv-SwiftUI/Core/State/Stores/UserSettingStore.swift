@@ -268,6 +268,11 @@ final class UserSettingStore {
         try saveSetting()
     }
 
+    func setBlurAppPreviewInBackground(_ enabled: Bool) throws {
+        userSetting.blurAppPreviewInBackground = enabled
+        try saveSetting()
+    }
+
     func setAutoPlayUgoira(_ autoPlay: Bool) throws {
         userSetting.autoPlayUgoira = autoPlay
         try saveSetting()

@@ -120,6 +120,9 @@ final class UserSetting: Codable {
     /// 剧透内容显示模式：0=正常显示 1=模糊显示 2=屏蔽 3=仅显示剧透
     var spoilerDisplayMode: Int = 0
 
+    /// 是否在进入后台时模糊页面预览
+    var blurAppPreviewInBackground: Bool = false
+
     /// 是否自动播放动图
     var autoPlayUgoira: Bool = false
 
@@ -308,6 +311,7 @@ final class UserSetting: Codable {
         case r18DisplayMode
         case r18gDisplayMode
         case spoilerDisplayMode
+        case blurAppPreviewInBackground
         case autoPlayUgoira
         case showGifAvatar
         case copyInfoText
@@ -395,6 +399,7 @@ final class UserSetting: Codable {
         self.r18DisplayMode = try container.decodeIfPresent(Int.self, forKey: .r18DisplayMode) ?? 0
         self.r18gDisplayMode = try container.decodeIfPresent(Int.self, forKey: .r18gDisplayMode) ?? 0
         self.spoilerDisplayMode = try container.decodeIfPresent(Int.self, forKey: .spoilerDisplayMode) ?? 0
+        self.blurAppPreviewInBackground = try container.decodeIfPresent(Bool.self, forKey: .blurAppPreviewInBackground) ?? false
         self.autoPlayUgoira = try container.decodeIfPresent(Bool.self, forKey: .autoPlayUgoira) ?? false
         self.showGifAvatar = try container.decodeIfPresent(Bool.self, forKey: .showGifAvatar) ?? true
         self.copyInfoText = try container.decodeIfPresent(String.self, forKey: .copyInfoText) ?? "title:{title}\npainter:{user_name}\nillust id:{illust_id}"
@@ -491,6 +496,7 @@ final class UserSetting: Codable {
         try container.encode(r18DisplayMode, forKey: .r18DisplayMode)
         try container.encode(r18gDisplayMode, forKey: .r18gDisplayMode)
         try container.encode(spoilerDisplayMode, forKey: .spoilerDisplayMode)
+        try container.encode(blurAppPreviewInBackground, forKey: .blurAppPreviewInBackground)
         try container.encode(autoPlayUgoira, forKey: .autoPlayUgoira)
         try container.encode(showGifAvatar, forKey: .showGifAvatar)
         try container.encode(copyInfoText, forKey: .copyInfoText)

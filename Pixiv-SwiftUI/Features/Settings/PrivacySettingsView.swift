@@ -6,6 +6,9 @@ struct PrivacySettingsView: View {
     var body: some View {
         Form {
             contentFilterSection
+            #if os(iOS)
+            backgroundPreviewSection
+            #endif
         }
         .formStyle(.grouped)
         .navigationTitle(String(localized: "过滤"))
@@ -77,6 +80,24 @@ struct PrivacySettingsView: View {
             Text(String(localized: "设置如何显示 R18、R18G、剧透内容和 AI 生成的作品"))
         }
     }
+
+    #if os(iOS)
+    private var backgroundPreviewSection: some View {
+        Section {
+            Toggle(
+                String(localized: "后台时模糊页面预览"),
+                isOn: Binding(
+                    get: { userSettingStore.userSetting.blurAppPreviewInBackground },
+                    set: { try? userSettingStore.setBlurAppPreviewInBackground($0) }
+                )
+            )
+        } header: {
+            Text(String(localized: "后台预览"))
+        } footer: {
+            Text(String(localized: "开启后，应用切到后台或进入最近任务时会模糊当前页面预览"))
+        }
+    }
+    #endif
 }
 
 #Preview {

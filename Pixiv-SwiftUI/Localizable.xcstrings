@@ -2179,6 +2179,38 @@
         }
       }
     },
+    "后台时模糊页面预览" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blur Page Preview In Background"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "后台时模糊页面预览"
+          }
+        }
+      }
+    },
+    "后台预览" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Background Preview"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "后台预览"
+          }
+        }
+      }
+    },
     "启动" : {
 
     },
@@ -3148,6 +3180,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "开启“导出插画元数据”后，会在下载的图片中嵌入插画 ID、作者、标题、简介、标签等信息。"
+          }
+        }
+      }
+    },
+    "开启后，应用切到后台或进入最近任务时会模糊当前页面预览" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When enabled, the current page preview will be blurred in the background and app switcher."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启后，应用切到后台或进入最近任务时会模糊当前页面预览"
           }
         }
       }

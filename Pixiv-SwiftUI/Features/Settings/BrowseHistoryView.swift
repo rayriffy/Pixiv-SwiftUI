@@ -179,7 +179,7 @@ struct BrowseHistoryView: View {
     private var illustGrid: some View {
         VStack(spacing: 12) {
             WaterfallGrid(data: illusts, columnCount: dynamicColumnCount, aspectRatio: { $0.safeAspectRatio }) { illust, columnWidth in
-                NavigationLink(value: illust) {
+                NavigationLink(value: IllustIdTarget(id: illust.id)) {
                     BrowseHistoryCard(illust: illust, columnWidth: columnWidth)
                 }
                 .buttonStyle(.plain)

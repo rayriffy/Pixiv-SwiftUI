@@ -112,6 +112,7 @@ struct WebDAVSyncSafeSettingsPayload: Codable, Sendable {
     let r18DisplayMode: Int
     let r18gDisplayMode: Int
     let spoilerDisplayMode: Int
+    let blurAppPreviewInBackground: Bool?
     let autoPlayUgoira: Bool
     let showGifAvatar: Bool
     let copyInfoText: String
@@ -151,6 +152,7 @@ struct WebDAVSyncSafeSettingsPayload: Codable, Sendable {
         self.r18DisplayMode = setting.r18DisplayMode
         self.r18gDisplayMode = setting.r18gDisplayMode
         self.spoilerDisplayMode = setting.spoilerDisplayMode
+        self.blurAppPreviewInBackground = setting.blurAppPreviewInBackground
         self.autoPlayUgoira = setting.autoPlayUgoira
         self.showGifAvatar = setting.showGifAvatar
         self.copyInfoText = setting.copyInfoText

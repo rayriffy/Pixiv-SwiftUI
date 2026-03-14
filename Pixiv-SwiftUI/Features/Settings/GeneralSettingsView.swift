@@ -3,6 +3,7 @@ import Kingfisher
 
 struct GeneralSettingsView: View {
     @Environment(UserSettingStore.self) var userSettingStore
+    @Environment(AccountStore.self) var accountStore
     @State private var cacheSize: String = "计算中..."
     @State private var showingClearCacheAlert = false
     @State private var isClearingCache = false
@@ -192,6 +193,24 @@ struct GeneralSettingsView: View {
                 }
                 .pickerStyle(.menu)
             }
+
+            LabeledContent(String(localized: "默认搜索排序")) {
+                Picker("", selection: Binding(
+                    get: { SearchSortOption(rawValue: userSettingStore.userSetting.defaultSearchSort) ?? .dateDesc },
+                    set: { try? userSettingStore.setDefaultSearchSort($0) }
+                )) {
+                    ForEach(SearchSortOption.allCases, id: \.self) { option in
+                        Text(option.displayName(isPremium: accountStore.currentAccount?.isPremium == 1)).tag(option)
+                    }
+                }
+                .pickerStyle(.menu)
+            }
+
+            Toggle(String(localized: "热门排序时显示收藏数"), isOn: Binding(
+                get: { userSettingStore.userSetting.showSearchPopularBookmarkCount },
+                set: { try? userSettingStore.setShowSearchPopularBookmarkCount($0) }
+            ))
+            .toggleStyle(.switch)
         } header: {
             Text(String(localized: "启动"))
         }

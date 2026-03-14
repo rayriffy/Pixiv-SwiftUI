@@ -3,6 +3,7 @@ import SwiftUI
 struct ProfileSettingView: View {
     @Environment(\ .dismiss) private var dismiss
     @Environment(UserSettingStore.self) var userSettingStore
+    @Environment(AccountStore.self) var accountStore
     @Binding var isPresented: Bool
     @State private var showingResetAlert = false
 
@@ -148,13 +149,32 @@ struct ProfileSettingView: View {
                 .pickerStyle(.menu)
                 #endif
             }
+
+            LabeledContent(String(localized: "默认搜索排序")) {
+                Picker("", selection: Binding(
+                    get: { SearchSortOption(rawValue: userSettingStore.userSetting.defaultSearchSort) ?? .dateDesc },
+                    set: { try? userSettingStore.setDefaultSearchSort($0) }
+                )) {
+                    ForEach(SearchSortOption.allCases, id: \.self) { option in
+                        Text(option.displayName(isPremium: accountStore.currentAccount?.isPremium == 1)).tag(option)
+                    }
+                }
+                #if os(macOS)
+                .pickerStyle(.menu)
+                #endif
+            }
+
+            Toggle(String(localized: "热门排序时显示收藏数"), isOn: Binding(
+                get: { userSettingStore.userSetting.showSearchPopularBookmarkCount },
+                set: { try? userSettingStore.setShowSearchPopularBookmarkCount($0) }
+            ))
+            .toggleStyle(.switch)
         } header: {
             Text("通用")
         } footer: {
             Text("中等画质节省流量，大图画质更清晰，原图画质最高清（可能消耗更多流量）")
         }
     }
-
     #if os(iOS)
     private var appearanceSection: some View {
         Section {

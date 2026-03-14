@@ -246,6 +246,11 @@ final class UserSettingStore {
         try saveSetting()
     }
 
+    func setShowSearchPopularBookmarkCount(_ enabled: Bool) throws {
+        userSetting.showSearchPopularBookmarkCount = enabled
+        try saveSetting()
+    }
+
     // MARK: - 其他设置
 
     func setAIDisplayMode(_ mode: Int) throws {
@@ -265,6 +270,11 @@ final class UserSettingStore {
 
     func setSpoilerDisplayMode(_ mode: Int) throws {
         userSetting.spoilerDisplayMode = mode
+        try saveSetting()
+    }
+
+    func setBlurAppPreviewInBackground(_ enabled: Bool) throws {
+        userSetting.blurAppPreviewInBackground = enabled
         try saveSetting()
     }
 
@@ -932,6 +942,11 @@ final class UserSettingStore {
 
     func setDefaultTab(_ tab: NavigationItem) throws {
         userSetting.defaultTab = tab.rawValue
+        try saveSetting()
+    }
+
+    func setDefaultSearchSort(_ sort: SearchSortOption) throws {
+        userSetting.defaultSearchSort = sort.rawValue
         try saveSetting()
     }
 

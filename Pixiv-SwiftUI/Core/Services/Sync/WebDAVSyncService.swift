@@ -183,6 +183,7 @@ final class WebDAVSyncService {
         setting.r18DisplayMode = payload.r18DisplayMode
         setting.r18gDisplayMode = payload.r18gDisplayMode
         setting.spoilerDisplayMode = payload.spoilerDisplayMode
+        setting.blurAppPreviewInBackground = payload.blurAppPreviewInBackground ?? false
         setting.autoPlayUgoira = payload.autoPlayUgoira
         setting.showGifAvatar = payload.showGifAvatar
         setting.copyInfoText = payload.copyInfoText

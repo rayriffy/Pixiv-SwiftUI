@@ -1176,6 +1176,22 @@
     "会同步：安全设置子集、屏蔽/过滤数据、搜索历史、小说阅读进度与阅读器设置" : {
 
     },
+    "伪·热门排序（收藏数）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pseudo Popular Sort (Bookmarks)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "伪·热门排序（收藏数）"
+          }
+        }
+      }
+    },
     "作品已删除" : {
       "localizations" : {
         "en" : {
@@ -2179,6 +2195,38 @@
         }
       }
     },
+    "后台时模糊页面预览" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blur Page Preview In Background"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "后台时模糊页面预览"
+          }
+        }
+      }
+    },
+    "后台预览" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Background Preview"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "后台预览"
+          }
+        }
+      }
+    },
     "启动" : {
 
     },
@@ -3152,6 +3200,22 @@
         }
       }
     },
+    "开启后，应用切到后台或进入最近任务时会模糊当前页面预览" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When enabled, the current page preview will be blurred in the background and app switcher."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启后，应用切到后台或进入最近任务时会模糊当前页面预览"
+          }
+        }
+      }
+    },
     "开启后，收藏作品时将默认为非公开状态" : {
       "localizations" : {
         "en" : {
@@ -3383,6 +3447,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ranking Category"
+          }
+        }
+      }
+    },
+    "控制搜索页在热门排序或伪热门排序时是否展示作品收藏数。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controls whether bookmark counts are shown in search results when popular or pseudo-popular sorting is active."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "控制搜索页在热门排序或伪热门排序时是否展示作品收藏数。"
           }
         }
       }
@@ -3638,6 +3719,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "是否要将导入的数据与现有数据 %@ 合并？"
+          }
+        }
+      }
+    },
+    "显示 AI 生成作品" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show AI-generated Works"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示 AI 生成作品"
           }
         }
       }
@@ -4768,6 +4865,7 @@
       }
     },
     "热门排序（仅会员）" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4779,6 +4877,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "热门排序（仅会员）"
+          }
+        }
+      }
+    },
+    "热门排序（收藏数）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Popular Sort (Bookmarks)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "热门排序（收藏数）"
+          }
+        }
+      }
+    },
+    "热门排序时显示收藏数" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Bookmark Counts in Popular Sort"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "热门排序时显示收藏数"
           }
         }
       }
@@ -6374,6 +6504,22 @@
     },
     "默认启动标签页" : {
 
+    },
+    "默认搜索排序" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default Search Sort"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "默认搜索排序"
+          }
+        }
+      }
     },
     "默认私密收藏" : {
       "localizations" : {

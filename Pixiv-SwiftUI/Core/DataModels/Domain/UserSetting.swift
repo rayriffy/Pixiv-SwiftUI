@@ -120,11 +120,20 @@ final class UserSetting: Codable {
     /// 剧透内容显示模式：0=正常显示 1=模糊显示 2=屏蔽 3=仅显示剧透
     var spoilerDisplayMode: Int = 0
 
+    /// 是否在进入后台时模糊页面预览
+    var blurAppPreviewInBackground: Bool = false
+
     /// 是否自动播放动图
     var autoPlayUgoira: Bool = false
 
     /// 是否显示动图头像
     var showGifAvatar: Bool = true
+
+    /// 搜索页热门排序时是否显示收藏数
+    var showSearchPopularBookmarkCount: Bool = false
+
+    /// 默认搜索排序
+    var defaultSearchSort: String = SearchSortOption.dateDesc.rawValue
 
     /// 复制信息文本格式
     var copyInfoText: String = "title:{title}\npainter:{user_name}\nillust id:{illust_id}"
@@ -308,8 +317,11 @@ final class UserSetting: Codable {
         case r18DisplayMode
         case r18gDisplayMode
         case spoilerDisplayMode
+        case blurAppPreviewInBackground
         case autoPlayUgoira
         case showGifAvatar
+        case showSearchPopularBookmarkCount
+        case defaultSearchSort
         case copyInfoText
         case animContainer
         case nameEval
@@ -395,8 +407,11 @@ final class UserSetting: Codable {
         self.r18DisplayMode = try container.decodeIfPresent(Int.self, forKey: .r18DisplayMode) ?? 0
         self.r18gDisplayMode = try container.decodeIfPresent(Int.self, forKey: .r18gDisplayMode) ?? 0
         self.spoilerDisplayMode = try container.decodeIfPresent(Int.self, forKey: .spoilerDisplayMode) ?? 0
+        self.blurAppPreviewInBackground = try container.decodeIfPresent(Bool.self, forKey: .blurAppPreviewInBackground) ?? false
         self.autoPlayUgoira = try container.decodeIfPresent(Bool.self, forKey: .autoPlayUgoira) ?? false
         self.showGifAvatar = try container.decodeIfPresent(Bool.self, forKey: .showGifAvatar) ?? true
+        self.showSearchPopularBookmarkCount = try container.decodeIfPresent(Bool.self, forKey: .showSearchPopularBookmarkCount) ?? false
+        self.defaultSearchSort = try container.decodeIfPresent(String.self, forKey: .defaultSearchSort) ?? SearchSortOption.dateDesc.rawValue
         self.copyInfoText = try container.decodeIfPresent(String.self, forKey: .copyInfoText) ?? "title:{title}\npainter:{user_name}\nillust id:{illust_id}"
         self.animContainer = try container.decodeIfPresent(Bool.self, forKey: .animContainer) ?? true
         self.nameEval = try container.decodeIfPresent(String.self, forKey: .nameEval)
@@ -491,8 +506,11 @@ final class UserSetting: Codable {
         try container.encode(r18DisplayMode, forKey: .r18DisplayMode)
         try container.encode(r18gDisplayMode, forKey: .r18gDisplayMode)
         try container.encode(spoilerDisplayMode, forKey: .spoilerDisplayMode)
+        try container.encode(blurAppPreviewInBackground, forKey: .blurAppPreviewInBackground)
         try container.encode(autoPlayUgoira, forKey: .autoPlayUgoira)
         try container.encode(showGifAvatar, forKey: .showGifAvatar)
+        try container.encode(showSearchPopularBookmarkCount, forKey: .showSearchPopularBookmarkCount)
+        try container.encode(defaultSearchSort, forKey: .defaultSearchSort)
         try container.encode(copyInfoText, forKey: .copyInfoText)
         try container.encode(animContainer, forKey: .animContainer)
         try container.encodeIfPresent(nameEval, forKey: .nameEval)

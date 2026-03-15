@@ -220,10 +220,24 @@
       }
     },
     "%lld 部作品" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 部Works"
+          }
+        }
+      }
     },
     "%lld 项" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 项"
+          }
+        }
+      }
     },
     "%lld/%lld" : {
       "localizations" : {
@@ -252,7 +266,14 @@
       }
     },
     "%lldP" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lldP"
+          }
+        }
+      }
     },
     "%lldpt" : {
       "localizations" : {
@@ -275,7 +296,14 @@
       }
     },
     "•" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "•"
+          }
+        }
+      }
     },
     "✓ %@" : {
       "localizations" : {
@@ -556,7 +584,14 @@
       }
     },
     "https://example.com/dav/" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://example.com/dav/"
+          }
+        }
+      }
     },
     "ID 快捷跳转" : {
       "localizations" : {
@@ -595,7 +630,14 @@
       }
     },
     "OR" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OR"
+          }
+        }
+      }
     },
     "P" : {
       "localizations" : {
@@ -614,10 +656,24 @@
       }
     },
     "PHPSESSID" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PHPSESSID"
+          }
+        }
+      }
     },
     "PHPSESSID (需包含下划线)" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PHPSESSID (需包含下划线)"
+          }
+        }
+      }
     },
     "Pixiv" : {
       "localizations" : {
@@ -666,7 +722,14 @@
       }
     },
     "Pixiv-SwiftUI 帮助" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pixiv-SwiftUI Help"
+          }
+        }
+      }
     },
     "PREMIUM" : {
       "localizations" : {
@@ -689,7 +752,14 @@
       }
     },
     "R18G 显示模式" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "R18G Display模式"
+          }
+        }
+      }
     },
     "Refresh Token" : {
       "localizations" : {
@@ -872,19 +942,54 @@
       }
     },
     "v%@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "v%@"
+          }
+        }
+      }
     },
     "v1 为手动同步：测试连接会自动准备远端目录；上传和恢复不会同步 Pixiv 登录态。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "v1 为手动同步：测试连接会自动准备远端目录；Upload和恢复不会同步 Pixiv 登录态。"
+          }
+        }
+      }
     },
     "Web API" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Web API"
+          }
+        }
+      }
     },
     "Web API 登录状态" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Web API Login状态"
+          }
+        }
+      }
     },
     "WebDAV" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WebDAV"
+          }
+        }
+      }
     },
     "万字" : {
       "localizations" : {
@@ -917,7 +1022,14 @@
       }
     },
     "上传备份" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload备份"
+          }
+        }
+      }
     },
     "下一章" : {
       "localizations" : {
@@ -966,10 +1078,24 @@
       }
     },
     "下载管理" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download管理"
+          }
+        }
+      }
     },
     "下载线程数" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download线程数"
+          }
+        }
+      }
     },
     "下载设置" : {
       "localizations" : {
@@ -982,7 +1108,14 @@
       }
     },
     "不会同步：Pixiv token、Cookie、密码、翻译 API Key、下载路径、下载任务、图片缓存" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不会同步：Pixiv token、Cookie、密码、翻译 API Key、Download路径、Download任务、图片缓存"
+          }
+        }
+      }
     },
     "不显示译文" : {
       "localizations" : {
@@ -1011,7 +1144,14 @@
       }
     },
     "个人资料" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile"
+          }
+        }
+      }
     },
     "中等" : {
       "localizations" : {
@@ -1034,7 +1174,14 @@
       }
     },
     "为你推荐的标签" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为你推荐的Tag"
+          }
+        }
+      }
     },
     "主题" : {
       "localizations" : {
@@ -1083,7 +1230,14 @@
       }
     },
     "亮点" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "亮点"
+          }
+        }
+      }
     },
     "仅显示AI作品" : {
       "localizations" : {
@@ -1106,10 +1260,24 @@
       }
     },
     "仅显示R18G" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅DisplayR18G"
+          }
+        }
+      }
     },
     "仅显示剧透" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅Display剧透"
+          }
+        }
+      }
     },
     "仅显示官方译文" : {
       "localizations" : {
@@ -1128,7 +1296,14 @@
       }
     },
     "从 WebDAV 恢复" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从 WebDAV Restore"
+          }
+        }
+      }
     },
     "从缓存中移除" : {
       "localizations" : {
@@ -1147,18 +1322,21 @@
       }
     },
     "从远端恢复" : {
-
-    },
-    "以图搜图" : {
-
-    },
-    "以游客身份浏览" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Browse as Guest"
+            "value" : "从远端Restore"
+          }
+        }
+      }
+    },
+    "以图搜图" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以图搜图"
           }
         }
       }
@@ -1174,7 +1352,14 @@
       }
     },
     "会同步：安全设置子集、屏蔽/过滤数据、搜索历史、小说阅读进度与阅读器设置" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "会同步：安全Settings子集、屏蔽/过滤数据、搜索历史、小说阅读进度与阅读器Settings"
+          }
+        }
+      }
     },
     "伪·热门排序（收藏数）" : {
       "localizations" : {
@@ -1225,15 +1410,11 @@
       }
     },
     "使用 {targetLang} 作为目标语言占位符。小说翻译提示词将在单段翻译和批量翻译中生效。" : {
-
-    },
-    "使用 Token 登录" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Login with Token"
+            "value" : "使用 {targetLang} 作为目标语言占位符。小说翻译Tip词将在单段翻译和批量翻译中生效。"
           }
         }
       }
@@ -1311,7 +1492,14 @@
       }
     },
     "保存配置" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save配置"
+          }
+        }
+      }
     },
     "全文翻译" : {
       "localizations" : {
@@ -1403,6 +1591,12 @@
     },
     "共匹配 %lld 条，详情加载失败 %lld 条" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "共匹配 %1$lld 条，详情Load失败 %2$lld 条"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "new",
@@ -1422,7 +1616,14 @@
       }
     },
     "关于 Pixiv-SwiftUI" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About Pixiv-SwiftUI"
+          }
+        }
+      }
     },
     "关注" : {
       "localizations" : {
@@ -1635,7 +1836,14 @@
       }
     },
     "切换侧边栏" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切换侧边栏"
+          }
+        }
+      }
     },
     "切换账号" : {
       "localizations" : {
@@ -1806,10 +2014,24 @@
       }
     },
     "前文上下文段落" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前文上下文段落"
+          }
+        }
+      }
     },
     "剧透内容显示模式" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剧透内容Display模式"
+          }
+        }
+      }
     },
     "功能" : {
       "localizations" : {
@@ -1874,7 +2096,14 @@
       }
     },
     "动图等多线程加载时的并发分片数。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "动图等多线程Load时的并发分片数。"
+          }
+        }
+      }
     },
     "动态" : {
       "localizations" : {
@@ -1929,10 +2158,24 @@
       }
     },
     "单批最大字符" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单批最大字符"
+          }
+        }
+      }
     },
     "单批最大段落" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单批最大段落"
+          }
+        }
+      }
     },
     "历史" : {
       "localizations" : {
@@ -1977,7 +2220,14 @@
       }
     },
     "反馈问题" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback问题"
+          }
+        }
+      }
     },
     "发布时间（从新到旧）" : {
       "localizations" : {
@@ -2028,7 +2278,14 @@
       }
     },
     "发现新版本" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发现新Version"
+          }
+        }
+      }
     },
     "取消" : {
       "localizations" : {
@@ -2041,7 +2298,14 @@
       }
     },
     "取消下载" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel下载"
+          }
+        }
+      }
     },
     "取消关注" : {
       "localizations" : {
@@ -2132,7 +2396,14 @@
       }
     },
     "同步失败" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sync失败"
+          }
+        }
+      }
     },
     "同步失败: %@" : {
       "localizations" : {
@@ -2183,7 +2454,14 @@
       }
     },
     "同步范围" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同步Range"
+          }
+        }
+      }
     },
     "名用户" : {
       "localizations" : {
@@ -2228,10 +2506,24 @@
       }
     },
     "启动" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Launch"
+          }
+        }
+      }
     },
     "启动时检查更新" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启动时检查Update"
+          }
+        }
+      }
     },
     "启用收藏缓存" : {
       "localizations" : {
@@ -2358,10 +2650,24 @@
       }
     },
     "在新窗口中登录（推荐）" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在新窗口中Login（推荐）"
+          }
+        }
+      }
     },
     "在浏览器中打开" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在浏览器中Open"
+          }
+        }
+      }
     },
     "在访达中显示" : {
       "localizations" : {
@@ -2532,7 +2838,14 @@
       }
     },
     "密码会保存在系统钥匙串中。推荐使用 WebDAV 的 App Password。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "密码会Save在系统钥匙串中。推荐使用 WebDAV 的 App Password。"
+          }
+        }
+      }
     },
     "对于多页插画，缓存全部页面而非仅封面" : {
       "localizations" : {
@@ -2561,7 +2874,14 @@
       }
     },
     "导入数据..." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import数据..."
+          }
+        }
+      }
     },
     "导出" : {
       "localizations" : {
@@ -2690,7 +3010,14 @@
       }
     },
     "导出数据..." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export数据..."
+          }
+        }
+      }
     },
     "导出系列" : {
       "localizations" : {
@@ -2773,7 +3100,14 @@
       }
     },
     "将恢复安全设置、屏蔽/过滤数据、搜索历史以及小说阅读进度。本地对应数据会被远端备份覆盖。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将恢复安全Settings、屏蔽/过滤数据、搜索历史以及小说阅读进度。本地对应数据会被远端备份覆盖。"
+          }
+        }
+      }
     },
     "小说" : {
       "localizations" : {
@@ -2822,10 +3156,24 @@
       }
     },
     "小说翻译优化" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novel翻译优化"
+          }
+        }
+      }
     },
     "小说翻译提示词" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小说翻译Tip词"
+          }
+        }
+      }
     },
     "尝试搜索其他标签" : {
       "localizations" : {
@@ -2934,7 +3282,14 @@
       }
     },
     "屏蔽此标签" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "屏蔽此Tag"
+          }
+        }
+      }
     },
     "工作环境" : {
       "localizations" : {
@@ -2947,7 +3302,14 @@
       }
     },
     "工具" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tools"
+          }
+        }
+      }
     },
     "已关注" : {
       "localizations" : {
@@ -2992,7 +3354,14 @@
       }
     },
     "已同步 / 不同步" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已Sync / 不Sync"
+          }
+        }
+      }
     },
     "已复制" : {
       "localizations" : {
@@ -3055,7 +3424,14 @@
       }
     },
     "已是最新版本" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已是最新Version"
+          }
+        }
+      }
     },
     "已暂停" : {
       "localizations" : {
@@ -3094,7 +3470,14 @@
       }
     },
     "已登录" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logged In"
+          }
+        }
+      }
     },
     "已经到底了" : {
       "localizations" : {
@@ -3133,7 +3516,14 @@
       }
     },
     "常规翻译提示词" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "常规翻译Tip词"
+          }
+        }
+      }
     },
     "平台" : {
       "localizations" : {
@@ -3146,7 +3536,14 @@
       }
     },
     "并发批次" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "并发批次"
+          }
+        }
+      }
     },
     "库" : {
       "localizations" : {
@@ -3159,10 +3556,24 @@
       }
     },
     "应用" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App"
+          }
+        }
+      }
     },
     "应用专用密码 / WebDAV 密码" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用专用Password / WebDAV Password"
+          }
+        }
+      }
     },
     "应用信息" : {
       "localizations" : {
@@ -3259,7 +3670,14 @@
       }
     },
     "开始日期" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始Date"
+          }
+        }
+      }
     },
     "开始阅读" : {
       "localizations" : {
@@ -3272,10 +3690,24 @@
       }
     },
     "当前实现按 Pixiv 账号分目录保存远端备份，避免不同账号互相覆盖。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前实现按 Pixiv 账号分目录Save远端备份，避免不同账号互相覆盖。"
+          }
+        }
+      }
     },
     "当前已是最新版本" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前已是最新Version"
+          }
+        }
+      }
     },
     "当前服务" : {
       "localizations" : {
@@ -3294,7 +3726,14 @@
       }
     },
     "当前账号" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前Account"
+          }
+        }
+      }
     },
     "快速保存" : {
       "localizations" : {
@@ -3307,7 +3746,14 @@
       }
     },
     "恢复并覆盖本地同步数据" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复并覆盖本地Sync数据"
+          }
+        }
+      }
     },
     "恢复默认设置" : {
       "localizations" : {
@@ -3390,10 +3836,24 @@
       }
     },
     "手动输入 PHPSESSID" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manual输入 PHPSESSID"
+          }
+        }
+      }
     },
     "手动输入 PHPSESSID..." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manual输入 PHPSESSID..."
+          }
+        }
+      }
     },
     "执行全量同步" : {
       "localizations" : {
@@ -3451,23 +3911,6 @@
         }
       }
     },
-    "控制搜索页在热门排序或伪热门排序时是否展示作品收藏数。" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Controls whether bookmark counts are shown in search results when popular or pseudo-popular sorting is active."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "控制搜索页在热门排序或伪热门排序时是否展示作品收藏数。"
-          }
-        }
-      }
-    },
     "推荐" : {
       "localizations" : {
         "en" : {
@@ -3479,10 +3922,24 @@
       }
     },
     "推荐标签" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推荐Tag"
+          }
+        }
+      }
     },
     "提示词设置" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提示词Settings"
+          }
+        }
+      }
     },
     "插画" : {
       "localizations" : {
@@ -3545,10 +4002,24 @@
       }
     },
     "搜索特辑" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search特辑"
+          }
+        }
+      }
     },
     "搜索该标签" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search该标签"
+          }
+        }
+      }
     },
     "播放" : {
       "localizations" : {
@@ -3567,10 +4038,24 @@
       }
     },
     "操作" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actions"
+          }
+        }
+      }
     },
     "收录作品" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "收录Works"
+          }
+        }
+      }
     },
     "收藏" : {
       "localizations" : {
@@ -3661,7 +4146,14 @@
       }
     },
     "新建窗口" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新建Window"
+          }
+        }
+      }
     },
     "无效的保存路径" : {
       "localizations" : {
@@ -3696,16 +4188,44 @@
       }
     },
     "无过滤" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无过滤"
+          }
+        }
+      }
     },
     "日期" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date"
+          }
+        }
+      }
     },
     "日期筛选" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日期Filter"
+          }
+        }
+      }
     },
     "日期范围" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date范围"
+          }
+        }
+      }
     },
     "是否要将导入的数据与现有数据 %@ 合并？" : {
       "localizations" : {
@@ -3740,7 +4260,14 @@
       }
     },
     "显示动图头像" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display动图头像"
+          }
+        }
+      }
     },
     "显示原文" : {
       "localizations" : {
@@ -3809,7 +4336,14 @@
       }
     },
     "暂无亮点内容" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂无亮点Content"
+          }
+        }
+      }
     },
     "暂无关注用户" : {
       "localizations" : {
@@ -3822,7 +4356,14 @@
       }
     },
     "暂无内容" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂无Content"
+          }
+        }
+      }
     },
     "暂无动态" : {
       "localizations" : {
@@ -3931,7 +4472,14 @@
       }
     },
     "暂无搜索记录" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂无Search记录"
+          }
+        }
+      }
     },
     "暂无收藏" : {
       "localizations" : {
@@ -3980,7 +4528,14 @@
       }
     },
     "更多" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More"
+          }
+        }
+      }
     },
     "服务设置" : {
       "localizations" : {
@@ -4025,16 +4580,44 @@
       }
     },
     "未能加载可显示的插画" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未能Load可显示的插画"
+          }
+        }
+      }
     },
     "本月排行榜" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本月Ranking榜"
+          }
+        }
+      }
     },
     "查找" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查找"
+          }
+        }
+      }
     },
     "查看" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看"
+          }
+        }
+      }
     },
     "查看作者" : {
       "localizations" : {
@@ -4077,7 +4660,14 @@
       }
     },
     "查看更新" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看Update"
+          }
+        }
+      }
     },
     "查看评论" : {
       "localizations" : {
@@ -4120,7 +4710,14 @@
       }
     },
     "标签完全一致" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tag完全一致"
+          }
+        }
+      }
     },
     "标签建议" : {
       "localizations" : {
@@ -4165,13 +4762,34 @@
       }
     },
     "标签部分一致" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "标签Partial一致"
+          }
+        }
+      }
     },
     "标题和说明文字" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Title和说明文字"
+          }
+        }
+      }
     },
     "检查更新" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查Update"
+          }
+        }
+      }
     },
     "模型" : {
       "localizations" : {
@@ -4214,7 +4832,14 @@
       }
     },
     "正在以图搜图..." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading以图搜图..."
+          }
+        }
+      }
     },
     "正在加载..." : {
       "localizations" : {
@@ -4385,7 +5010,14 @@
       }
     },
     "没有可显示的结果" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有可Display的结果"
+          }
+        }
+      }
     },
     "没有找到小说" : {
       "localizations" : {
@@ -4418,7 +5050,14 @@
       }
     },
     "没有找到结果" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not Found结果"
+          }
+        }
+      }
     },
     "没有排行数据" : {
       "localizations" : {
@@ -4467,7 +5106,14 @@
       }
     },
     "测试连接" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "测试Connection"
+          }
+        }
+      }
     },
     "浏览" : {
       "localizations" : {
@@ -4684,7 +5330,14 @@
       }
     },
     "清除历史记录" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear历史记录"
+          }
+        }
+      }
     },
     "清除后已翻译的内容需要重新翻译。内存缓存上限 100 条，磁盘缓存保留 30 天内的翻译结果。" : {
       "localizations" : {
@@ -4697,7 +5350,14 @@
       }
     },
     "清除后无法恢复，确定要继续吗？" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear后无法恢复，确定要继续吗？"
+          }
+        }
+      }
     },
     "清除已完成" : {
       "localizations" : {
@@ -4740,7 +5400,14 @@
       }
     },
     "清除日期筛选" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除日期Filter"
+          }
+        }
+      }
     },
     "清除缓存" : {
       "localizations" : {
@@ -4864,23 +5531,6 @@
         }
       }
     },
-    "热门排序（仅会员）" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trending Sort (Premium Only)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "热门排序（仅会员）"
-          }
-        }
-      }
-    },
     "热门排序（收藏数）" : {
       "localizations" : {
         "en" : {
@@ -4935,6 +5585,12 @@
     },
     "版本 %@\n\n%@" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version %1$@\n\n%2$@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "new",
@@ -4970,7 +5626,14 @@
       }
     },
     "用户名" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Username"
+          }
+        }
+      }
     },
     "由于设置，部分内容已被过滤" : {
       "localizations" : {
@@ -5009,7 +5672,14 @@
       }
     },
     "登出 Web API" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logout Web API"
+          }
+        }
+      }
     },
     "登录" : {
       "localizations" : {
@@ -5022,10 +5692,24 @@
       }
     },
     "登录 Pixiv" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Login Pixiv"
+          }
+        }
+      }
     },
     "登录 Pixiv Web" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Login Pixiv Web"
+          }
+        }
+      }
     },
     "登录以保存收藏、关注画师" : {
       "localizations" : {
@@ -5266,7 +5950,14 @@
       }
     },
     "确认清除历史记录" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirm清除历史记录"
+          }
+        }
+      }
     },
     "确认清除缓存" : {
       "localizations" : {
@@ -5513,7 +6204,14 @@
       }
     },
     "结束日期" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "结束Date"
+          }
+        }
+      }
     },
     "继续" : {
       "localizations" : {
@@ -5720,7 +6418,14 @@
       }
     },
     "网页凭证" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Web凭证"
+          }
+        }
+      }
     },
     "翻译" : {
       "localizations" : {
@@ -5795,7 +6500,14 @@
       }
     },
     "自动更新" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动Update"
+          }
+        }
+      }
     },
     "自动预取图片" : {
       "localizations" : {
@@ -5814,10 +6526,24 @@
       }
     },
     "自定义主题色" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom主题色"
+          }
+        }
+      }
     },
     "自定义颜色" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom颜色"
+          }
+        }
+      }
     },
     "行距" : {
       "localizations" : {
@@ -5841,23 +6567,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "覆盖"
-          }
-        }
-      }
-    },
-    "解压中..." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Extracting..."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "解压中..."
           }
         }
       }
@@ -5893,7 +6602,14 @@
       }
     },
     "设置如何显示 R18、R18G、剧透内容和 AI 生成的作品" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings如何显示 R18、R18G、剧透内容和 AI 生成的作品"
+          }
+        }
+      }
     },
     "评论" : {
       "localizations" : {
@@ -6040,7 +6756,14 @@
       }
     },
     "请输入类似 xxxx_xxxx 的 Cookie 值" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please Enter类似 xxxx_xxxx 的 Cookie 值"
+          }
+        }
+      }
     },
     "请选择一个项目" : {
       "localizations" : {
@@ -6053,7 +6776,14 @@
       }
     },
     "读取图片失败" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "读取图片Failed"
+          }
+        }
+      }
     },
     "账户" : {
       "localizations" : {
@@ -6102,24 +6832,34 @@
       }
     },
     "输入 PHPSESSID" : {
-
-    },
-    "输入您的 PHPSESSID（可选）" : {
-
-    },
-    "输入您的 refresh_token" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enter your refresh_token"
+            "value" : "输入 PHPSESSID"
+          }
+        }
+      }
+    },
+    "输入您的 PHPSESSID（可选）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "输入您的 PHPSESSID（Optional）"
           }
         }
       }
     },
     "输入您的 refresh_token（必填）" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "输入您的 refresh_token（Required）"
+          }
+        }
+      }
     },
     "边距" : {
       "localizations" : {
@@ -6132,7 +6872,14 @@
       }
     },
     "达到段落数或字符数上限时会切分批次，跨批次上下文可帮助模型保持人名和语气一致。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "达到段落数或字符数上限时会切分批次，跨批次上下文可Help模型保持人名和语气一致。"
+          }
+        }
+      }
     },
     "过滤" : {
       "localizations" : {
@@ -6166,17 +6913,6 @@
         }
       }
     },
-    "返回" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Back"
-          }
-        }
-      }
-    },
     "这将删除所有下载和已保存的文件。" : {
       "localizations" : {
         "en" : {
@@ -6204,13 +6940,34 @@
       }
     },
     "进入应用" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "进入App"
+          }
+        }
+      }
     },
     "远端目录" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "远端Directory"
+          }
+        }
+      }
     },
     "远端路径" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "远端Path"
+          }
+        }
+      }
     },
     "连载中" : {
       "localizations" : {
@@ -6313,7 +7070,14 @@
       }
     },
     "选择颜色" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择Color"
+          }
+        }
+      }
     },
     "通用" : {
       "localizations" : {
@@ -6326,10 +7090,24 @@
       }
     },
     "通过 refresh_token 登录将无法访问 Ajax API（部分功能不可用）。如果需要完整功能，请选填 PHPSESSID，或使用上方的新窗口登录。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过 refresh_token Login将无法访问 Ajax API（部分功能不可用）。如果需要完整功能，请选填 PHPSESSID，或使用上方的新窗口Login。"
+          }
+        }
+      }
     },
     "通过手动输入 Cookie 中的 PHPSESSID 字段来登录 Web API。" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过手动输入 Cookie 中的 PHPSESSID 字段来Login Web API。"
+          }
+        }
+      }
     },
     "通过绕过 SNI 嗅探来实现免代理直连 Pixiv。" : {
       "localizations" : {
@@ -6342,10 +7120,24 @@
       }
     },
     "通过网页登录" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过网页Login"
+          }
+        }
+      }
     },
     "通过网页获取凭证" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过Web获取凭证"
+          }
+        }
+      }
     },
     "邮箱" : {
       "localizations" : {
@@ -6388,7 +7180,14 @@
       }
     },
     "重置为默认提示词" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置为Default提示词"
+          }
+        }
+      }
     },
     "重置所有设置" : {
       "localizations" : {
@@ -6503,7 +7302,14 @@
       }
     },
     "默认启动标签页" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default启动标签页"
+          }
+        }
+      }
     },
     "默认搜索排序" : {
       "localizations" : {

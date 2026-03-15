@@ -21,26 +21,6 @@ body:
     validations:
       required: true
 
-  - type: textarea
-    id: use_case
-    attributes:
-      label: 使用场景
-      description: 这个功能在什么场景下会用到？
-      placeholder: |
-        在夜间使用应用时，自动切换到深色模式可以保护眼睛
-        根据系统时间或环境光线自动调整主题
-    validations:
-      required: true
-
-  - type: textarea
-    id: alternatives
-    attributes:
-      label: 替代方案
-      description: 您是否考虑过其他解决方案？当前是否有变通方法？
-      placeholder: |
-        目前需要手动切换深色模式
-        可以使用第三方应用实现类似功能但不够便捷
-
   - type: dropdown
     id: device
     attributes:
@@ -79,5 +59,5 @@ body:
       options:
         - label: 我已确认这不是重复的功能请求
           required: true
-        - label: 我理解功能实现可能需要时间
+        - label: 我理解 issue 的解决可能需要时间
           required: false

@@ -65,7 +65,7 @@ body:
     attributes:
       label: App 版本
       description: 您使用的 Pixiv-SwiftUI 版本号
-      placeholder: 1.0.0
+      placeholder: 0.12.0
     validations:
       required: true
 
@@ -90,5 +90,5 @@ body:
       options:
         - label: 我已查阅过文档和现有 issue
           required: true
-        - label: 我理解这可能不是 bug 而是使用问题
+        - label: 我理解 issue 的解决可能需要时间
           required: false

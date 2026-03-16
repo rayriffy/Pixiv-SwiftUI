@@ -92,11 +92,18 @@ Current Support:
 
 ## Installation
 
+### Manual Installation
 - iOS/iPadOS: Go to Releases to download the latest ipa package and use AltStore or other methods to sideload.
 - macOS: Go to Releases to download the latest dmg package and install. The installation package is not signed; you can run the following command to bypass it:
 
 ```shell
 sudo xattr -rd com.apple.quarantine /Applications/Pixiv-SwiftUI.app
+```
+
+### Homebrew
+```bash
+brew tap eslzzyl/tap
+brew install --cask pixiv-swiftui
 ```
 
 ## Special Thanks

@@ -135,11 +135,18 @@ cd Pixiv-SwiftUI
 
 ## 安装方式
 
+### 手动安装
 - iOS/iPadOS：到 Release 中下载最新版本的 ipa 包并使用 AltStore 等方式侧载安装。
-- macOS：到 Release 中下载最新版本的 dmg 包并安装。安装包没有签名，可以执行以下命令来绕过：
+- macOS：到 Release 中下载最新版本的 dmg 包并安装，或者使用下面的 Homebrew 安装。安装包没有签名，可以执行以下命令来绕过：
 
 ```shell
 sudo xattr -rd com.apple.quarantine /Applications/Pixiv-SwiftUI.app
+```
+
+### Homebrew
+```bash
+brew tap eslzzyl/tap
+brew install --cask pixiv-swiftui
 ```
 
 ## 特别鸣谢

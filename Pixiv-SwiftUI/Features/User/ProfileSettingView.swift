@@ -85,6 +85,24 @@ struct ProfileSettingView: View {
                 #endif
             }
 
+            LabeledContent("漫画详情页画质") {
+                Picker("", selection: Binding(
+                    get: { userSettingStore.userSetting.mangaQuality },
+                    set: { try? userSettingStore.setMangaQuality($0) }
+                )) {
+                    Text("中等").tag(0)
+                    Text("大图").tag(1)
+                    Text("原图").tag(2)
+                }
+                #if os(macOS)
+                .pickerStyle(.menu)
+                .frame(width: 100)
+                #else
+                .pickerStyle(.segmented)
+                .frame(width: 150)
+                #endif
+            }
+
             LabeledContent("大图预览画质") {
                 Picker("", selection: Binding(
                     get: { userSettingStore.userSetting.zoomQuality },

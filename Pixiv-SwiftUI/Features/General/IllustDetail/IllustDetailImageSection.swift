@@ -35,14 +35,17 @@ struct IllustDetailImageSection: View {
         illust.type == "manga"
     }
 
+    private var displayQuality: Int {
+        isManga ? userSettingStore.userSetting.mangaQuality : userSettingStore.userSetting.pictureQuality
+    }
+
     private var imageURLs: [String] {
-        let quality = isManga ? userSettingStore.userSetting.mangaQuality : userSettingStore.userSetting.pictureQuality
         if !illust.metaPages.isEmpty {
             return illust.metaPages.indices.compactMap { index in
-                ImageURLHelper.getPageImageURL(from: illust, page: index, quality: quality)
+                ImageURLHelper.getPageImageURL(from: illust, page: index, quality: displayQuality)
             }
         }
-        return [ImageURLHelper.getImageURL(from: illust, quality: quality)]
+        return [ImageURLHelper.getImageURL(from: illust, quality: displayQuality)]
     }
 
     var body: some View {
@@ -71,7 +74,10 @@ struct IllustDetailImageSection: View {
                 standardImageSection
                     .onTapGesture {
                         #if os(macOS)
-                        let zoomURL = ImageURLHelper.getImageURL(from: illust, quality: userSettingStore.userSetting.zoomQuality)
+                        let quality = isManga
+                            ? userSettingStore.userSetting.mangaQuality
+                            : userSettingStore.userSetting.zoomQuality
+                        let zoomURL = ImageURLHelper.getImageURL(from: illust, quality: quality)
                         ImageViewerWindowManager.shared.showSingleImage(
                             illust: illust,
                             url: zoomURL,
@@ -91,9 +97,16 @@ struct IllustDetailImageSection: View {
     }
 
     private var standardImageSection: some View {
-        let quality = userSettingStore.userSetting.pictureQuality
-        let targetURL = ImageURLHelper.getImageURL(from: illust, quality: quality)
-        let fallbackURLs = ImageQualityHelper.getLowerQualityURLs(from: illust, targetQuality: quality)
+        let targetURL = ImageURLHelper.getImageURL(
+            from: illust,
+            quality: displayQuality,
+            isPicture: !isManga
+        )
+        let fallbackURLs = ImageQualityHelper.getLowerQualityURLs(
+            from: illust,
+            targetQuality: displayQuality,
+            isManga: isManga
+        )
 
         return ProgressiveCachedAsyncImage(
             targetURL: targetURL,
@@ -190,7 +203,9 @@ struct IllustDetailImageSection: View {
 
     #if os(macOS)
     private func openImageViewerWindow(initialPage: Int) {
-        let quality = userSettingStore.userSetting.zoomQuality
+        let quality = isManga
+            ? userSettingStore.userSetting.mangaQuality
+            : userSettingStore.userSetting.zoomQuality
         let zoomURLs = illust.metaPages.indices.compactMap { pageIndex in
             ImageURLHelper.getPageImageURL(from: illust, page: pageIndex, quality: quality)
         }

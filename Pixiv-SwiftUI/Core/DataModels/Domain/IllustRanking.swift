@@ -76,21 +76,21 @@ enum IllustRankingMode: String, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .day:
-            return "每日"
+            return String(localized: "每日")
         case .dayMale:
-            return "男性向"
+            return String(localized: "男性向")
         case .dayFemale:
-            return "女性向"
+            return String(localized: "女性向")
         case .week:
-            return "每周"
+            return String(localized: "每周")
         case .month:
-            return "每月"
+            return String(localized: "每月")
         case .weekOriginal:
-            return "原创"
+            return String(localized: "原创")
         case .weekRookie:
-            return "新人"
+            return String(localized: "新人")
         case .dayAI:
-            return "AI"
+            return String(localized: "AI")
         case .dayR18AI:
             return "XVIII_AI"
         case .dayR18:

@@ -108,9 +108,9 @@ struct PrivacySettingsView: View {
                 try? userSettingStore.moveIllustRankingModes(fromOffsets: fromOffsets, toOffset: toOffset)
             }
         } header: {
-            Text(verbatim: "排行榜分组")
+            Text(String(localized: "排行榜分组"))
         } footer: {
-            Text(verbatim: "左侧三横图标用于提示可调整顺序，拖动排序，开关控制是否显示。至少保留一个分组。")
+            Text(String(localized: "左侧三横图标用于提示可调整顺序，拖动排序，开关控制是否显示。至少保留一个分组。"))
         }
         .environment(\.editMode, .constant(.active))
         #else
@@ -126,9 +126,9 @@ struct PrivacySettingsView: View {
                 try? userSettingStore.moveIllustRankingModes(fromOffsets: fromOffsets, toOffset: toOffset)
             }
         } header: {
-            Text(verbatim: "排行榜分组")
+            Text(String(localized: "排行榜分组"))
         } footer: {
-            Text(verbatim: "开关控制是否在排行榜中显示。iPhone 和 iPad 可以直接拖动调整顺序。")
+            Text(String(localized: "开关控制是否在排行榜中显示。iPhone 和 iPad 可以直接拖动调整顺序。"))
         }
         #endif
     }

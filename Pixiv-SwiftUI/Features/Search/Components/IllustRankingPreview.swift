@@ -276,20 +276,7 @@ enum IllustRankingType: Hashable, Identifiable {
     }
 
     var title: String {
-        switch self {
-        case .daily: return "每日"
-        case .dailyMale: return "男性向"
-        case .dailyFemale: return "女性向"
-        case .week: return "每周"
-        case .month: return "每月"
-        case .weekOriginal: return "原创"
-        case .weekRookie: return "新人"
-        case .dayAI: return "AI"
-        case .dayR18AI: return "XVIII_AI"
-        case .dayR18: return "XVIII"
-        case .weekR18: return "XVIII_WEEK"
-        case .weekR18G: return "XVIII_G"
-        }
+        mode.title
     }
 
     var mode: IllustRankingMode {

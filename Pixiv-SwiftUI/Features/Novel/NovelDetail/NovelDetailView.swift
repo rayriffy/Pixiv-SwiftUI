@@ -218,8 +218,10 @@ struct NovelDetailView: View {
                         Label(String(localized: "复制 ID"), systemImage: "doc.on.doc")
                     }
 
-                    Button(action: shareNovel) {
-                        Label(String(localized: "分享"), systemImage: "square.and.arrow.up")
+                    if let shareURL = URL(string: "https://www.pixiv.net/novel/show.php?id=\(novel.id)") {
+                        ShareLink(item: shareURL) {
+                            Label(String(localized: "分享"), systemImage: "square.and.arrow.up")
+                        }
                     }
 
                     Divider()
@@ -432,13 +434,6 @@ struct NovelDetailView: View {
         pasteBoard.setString(text, forType: .string)
         #endif
         showCopyToast = true
-    }
-
-    private func shareNovel() {
-        guard let url = URL(string: "https://www.pixiv.net/novel/show.php?id=\(novel.id)") else { return }
-        #if canImport(UIKit)
-        UIApplication.shared.open(url)
-        #endif
     }
 
     private func fetchUserDetailIfNeeded() {

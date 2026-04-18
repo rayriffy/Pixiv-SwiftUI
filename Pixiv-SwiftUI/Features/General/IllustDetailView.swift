@@ -301,8 +301,10 @@ struct IllustDetailView: View {
                             Label(String(localized: "复制 ID"), systemImage: "doc.on.doc")
                         }
 
-                        Button(action: shareIllust) {
-                            Label(String(localized: "分享"), systemImage: "square.and.arrow.up")
+                        if let shareURL = URL(string: "https://www.pixiv.net/artworks/\(illust.id)") {
+                            ShareLink(item: shareURL) {
+                                Label(String(localized: "分享"), systemImage: "square.and.arrow.up")
+                            }
                         }
 
                         if isLoggedIn {
@@ -545,13 +547,6 @@ struct IllustDetailView: View {
         guard let host = url.host else { return false }
         return NetworkModeStore.shared.useDirectConnection &&
                (host.contains("i.pximg.net") || host.contains("img-master.pixiv.net"))
-    }
-
-    private func shareIllust() {
-        guard let url = URL(string: "https://www.pixiv.net/artworks/\(illust.id)") else { return }
-        #if canImport(UIKit)
-        UIApplication.shared.open(url)
-        #endif
     }
 
     private func bookmarkIllust(isPrivate: Bool = false, forceUnbookmark: Bool = false) {

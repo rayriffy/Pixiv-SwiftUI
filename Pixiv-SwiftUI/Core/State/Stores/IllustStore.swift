@@ -358,7 +358,7 @@ final class IllustStore {
         return modes.filter { seenModes.insert($0).inserted }
     }
 
-    private func loadRanking(mode: IllustRankingMode, date: Date? = nil, forceRefresh: Bool = false) async {
+    func loadRanking(mode: IllustRankingMode, date: Date? = nil, forceRefresh: Bool = false) async {
         let dateString = date.map { dateFormatter.string(from: $0) }
         let cacheKey = cacheKey(for: mode, dateString: dateString)
 

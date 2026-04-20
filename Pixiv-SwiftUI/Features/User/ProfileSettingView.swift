@@ -11,6 +11,18 @@ struct ProfileSettingView: View {
         self._isPresented = isPresented
     }
 
+    private var isPad: Bool {
+        #if os(iOS)
+        return UIDevice.current.userInterfaceIdiom == .pad
+        #else
+        return true
+        #endif
+    }
+
+    private var availableMainItems: [NavigationItem] {
+        isPad ? NavigationItem.mainItems : NavigationItem.mainItemsForPhone
+    }
+
     var body: some View {
         Form {
             generalSection
@@ -159,7 +171,7 @@ struct ProfileSettingView: View {
                     get: { NavigationItem(rawValue: userSettingStore.userSetting.defaultTab) ?? .recommend },
                     set: { try? userSettingStore.setDefaultTab($0) }
                 )) {
-                    ForEach(NavigationItem.mainItems) { item in
+                    ForEach(availableMainItems) { item in
                         Text(item.title).tag(item)
                     }
                 }

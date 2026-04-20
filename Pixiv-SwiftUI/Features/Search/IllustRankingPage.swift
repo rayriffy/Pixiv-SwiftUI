@@ -2,7 +2,9 @@ import SwiftUI
 
 struct IllustRankingPage: View {
     @Environment(IllustStore.self) var store
+    var initialMode: IllustRankingMode?
     @State private var selectedMode: IllustRankingMode = .day
+    @State private var hasInitializedMode = false
     @State private var selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date()
     @State private var usesLatestDate = true
     @State private var isLoading = false
@@ -311,6 +313,16 @@ struct IllustRankingPage: View {
             .onReceive(NotificationCenter.default.publisher(for: .refreshCurrentPage)) { _ in
                 Task {
                     await loadRankings(forceRefresh: true)
+                }
+            }
+            .onAppear {
+                if !hasInitializedMode {
+                    hasInitializedMode = true
+                    if let initialMode = initialMode, rankingModes.contains(initialMode) {
+                        selectedMode = initialMode
+                    } else {
+                        _ = syncSelectedModeIfNeeded()
+                    }
                 }
             }
         }

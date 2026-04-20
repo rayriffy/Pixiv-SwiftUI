@@ -77,11 +77,11 @@ extension View {
                         )
                     }
             }
-            .navigationDestination(for: IllustRankingType.self) { _ in
-                IllustRankingPage()
+            .navigationDestination(for: IllustRankingType.self) { type in
+                IllustRankingPage(initialMode: type.mode)
                     .onAppear {
                         print(
-                            "[pixivNavigationDestinations] IllustRankingPage destination triggered"
+                            "[pixivNavigationDestinations] IllustRankingPage destination triggered with mode: \(type.mode.title)"
                         )
                     }
             }

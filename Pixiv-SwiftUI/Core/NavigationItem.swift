@@ -74,8 +74,16 @@ enum NavigationItem: String, CaseIterable, Identifiable, Hashable {
         [.recommend, .ranking, .updates, .bookmarks, .search, .novel]
     }
 
+    static var mainItemsForPhone: [NavigationItem] {
+        [.recommend, .updates, .bookmarks, .search, .novel]
+    }
+
     static var mainItemsForLegacy: [NavigationItem] {
         [.recommend, .ranking, .updates, .bookmarks, .novel, .search]
+    }
+
+    static var mainItemsForLegacyPhone: [NavigationItem] {
+        [.recommend, .updates, .bookmarks, .novel, .search]
     }
 
     static var secondaryItems: [NavigationItem] {

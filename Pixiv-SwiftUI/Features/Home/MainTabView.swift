@@ -37,9 +37,13 @@ private struct MainTabViewNew: View {
         isPad && verticalSizeClass == .compact
     }
 
+    private var mainItems: [NavigationItem] {
+        isPad ? NavigationItem.mainItems : NavigationItem.mainItemsForPhone
+    }
+
     var body: some View {
         TabView(selection: $selectedTab) {
-            ForEach(NavigationItem.mainItems) { item in
+            ForEach(mainItems) { item in
                 if item == .search {
                     Tab(value: item, role: .search) {
                         item.destination
@@ -77,7 +81,9 @@ private struct MainTabViewNew: View {
         .tabBarMinimizeBehavior(.onScrollDown)
         #endif
         .onAppear {
-            selectedTab = NavigationItem(rawValue: userSettingStore.userSetting.defaultTab) ?? .recommend
+            let validTabs = Set(mainItems)
+            let savedTab = NavigationItem(rawValue: userSettingStore.userSetting.defaultTab) ?? .recommend
+            selectedTab = validTabs.contains(savedTab) ? savedTab : .recommend
         }
     }
 }
@@ -88,13 +94,25 @@ private struct MainTabViewLegacy: View {
     @Bindable var accountStore: AccountStore
     @Environment(UserSettingStore.self) var userSettingStore
 
+    private var isPad: Bool {
+        #if os(iOS)
+        return UIDevice.current.userInterfaceIdiom == .pad
+        #else
+        return false
+        #endif
+    }
+
+    private var mainItems: [NavigationItem] {
+        isPad ? NavigationItem.mainItemsForLegacy : NavigationItem.mainItemsForLegacyPhone
+    }
+
     init(accountStore: AccountStore) {
         self.accountStore = accountStore
     }
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            ForEach(NavigationItem.mainItemsForLegacy) { item in
+            ForEach(mainItems) { item in
                 item.destination
                     .tabItem {
                         Label(item.title, systemImage: item.icon)
@@ -103,7 +121,9 @@ private struct MainTabViewLegacy: View {
             }
         }
         .onAppear {
-            selectedTab = NavigationItem(rawValue: userSettingStore.userSetting.defaultTab) ?? .recommend
+            let validTabs = Set(mainItems)
+            let savedTab = NavigationItem(rawValue: userSettingStore.userSetting.defaultTab) ?? .recommend
+            selectedTab = validTabs.contains(savedTab) ? savedTab : .recommend
         }
     }
 }

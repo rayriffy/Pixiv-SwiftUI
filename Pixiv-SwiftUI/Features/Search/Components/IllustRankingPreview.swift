@@ -1,15 +1,24 @@
 import SwiftUI
 
 struct IllustRankingPreview: View {
-    @State private var store = IllustStore()
+    private let store = IllustStore.shared
     private let accountStore = AccountStore.shared
+    @Environment(UserSettingStore.self) var userSettingStore
+
+    private var preferredMode: IllustRankingMode {
+        userSettingStore.enabledIllustRankingModes.first ?? .day
+    }
 
     private var illusts: [Illusts] {
-        store.illusts(for: .day)
+        store.illusts(for: preferredMode)
     }
 
     private var isGuestMode: Bool {
         !accountStore.isLoggedIn
+    }
+
+    private var rankingType: IllustRankingType? {
+        IllustRankingType(mode: preferredMode)
     }
 
     var body: some View {
@@ -19,8 +28,8 @@ struct IllustRankingPreview: View {
                     Text("排行")
                         .font(.headline)
                         .foregroundColor(.primary)
-                } else {
-                    NavigationLink(value: IllustRankingType.daily) {
+                } else if let rankingType = rankingType {
+                    NavigationLink(value: rankingType) {
                         HStack(spacing: 4) {
                             Text("排行")
                                 .font(.headline)
@@ -31,6 +40,10 @@ struct IllustRankingPreview: View {
                         }
                     }
                     .buttonStyle(.plain)
+                } else {
+                    Text("排行")
+                        .font(.headline)
+                        .foregroundColor(.primary)
                 }
                 Spacer()
             }
@@ -83,7 +96,7 @@ struct IllustRankingPreview: View {
         }
         .padding(.top, 16)
         .task {
-            await store.loadDailyRanking()
+            await store.loadRanking(mode: preferredMode)
         }
     }
 }

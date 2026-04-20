@@ -8,6 +8,18 @@ struct GeneralSettingsView: View {
     @State private var showingClearCacheAlert = false
     @State private var isClearingCache = false
 
+    private var isPad: Bool {
+        #if os(iOS)
+        return UIDevice.current.userInterfaceIdiom == .pad
+        #else
+        return true
+        #endif
+    }
+
+    private var availableMainItems: [NavigationItem] {
+        isPad ? NavigationItem.mainItems : NavigationItem.mainItemsForPhone
+    }
+
     var body: some View {
         Form {
             imageQualitySection
@@ -187,7 +199,7 @@ struct GeneralSettingsView: View {
                     get: { NavigationItem(rawValue: userSettingStore.userSetting.defaultTab) ?? .recommend },
                     set: { try? userSettingStore.setDefaultTab($0) }
                 )) {
-                    ForEach(NavigationItem.mainItems) { item in
+                    ForEach(availableMainItems) { item in
                         Text(item.title).tag(item)
                     }
                 }

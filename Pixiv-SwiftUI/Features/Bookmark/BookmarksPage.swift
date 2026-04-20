@@ -121,7 +121,7 @@ ScrollView {
                                 Image(systemName: "bookmark.slash")
                                     .font(.largeTitle)
                                     .foregroundColor(.gray)
-                                Text("暂无收藏")
+                                Text(String(localized: "暂无收藏"))
                                     .foregroundColor(.gray)
                             }
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -200,7 +200,7 @@ ScrollView {
                     await store.refreshBookmarks(userId: accountStore.currentAccount?.userId ?? "")
                 }
             }
-            .navigationTitle(initialRestrict == nil ? "收藏" : (initialRestrict == "public" ? "公开收藏" : "非公开收藏"))
+            .navigationTitle(initialRestrict == nil ? String(localized: "收藏") : (initialRestrict == "public" ? String(localized: "公开收藏") : String(localized: "非公开收藏")))
             .pixivNavigationDestinations()
             .onChange(of: accountStore.navigationRequest) { _, newValue in
                 if let request = newValue {
@@ -362,18 +362,18 @@ struct BookmarksNotLoggedInView: View {
                 .foregroundStyle(.secondary)
 
             VStack(spacing: 8) {
-                Text("登录后查看收藏")
+                Text(String(localized: "登录后查看收藏"))
                     .font(.title2)
                     .fontWeight(.semibold)
 
-                Text("收藏喜欢的作品，随时随地浏览")
+                Text(String(localized: "收藏喜欢的作品，随时随地浏览"))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
 
             Button(action: onLogin) {
-                Text("立即登录")
+                Text(String(localized: "立即登录"))
                     .frame(maxWidth: 200)
             }
             .buttonStyle(.borderedProminent)

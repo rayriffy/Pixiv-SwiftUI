@@ -5,6 +5,14 @@ struct TypeFilterButton: View {
         case all = "全部"
         case illust = "插画"
         case manga = "漫画"
+
+        var localizedName: String {
+            switch self {
+            case .all: return String(localized: "全部")
+            case .illust: return String(localized: "插画")
+            case .manga: return String(localized: "漫画")
+            }
+        }
     }
 
     @Binding var selectedType: ContentType
@@ -17,6 +25,13 @@ struct TypeFilterButton: View {
     enum RestrictType: String, CaseIterable {
         case publicAccess = "公开"
         case privateAccess = "非公开"
+
+        var localizedName: String {
+            switch self {
+            case .publicAccess: return String(localized: "公开")
+            case .privateAccess: return String(localized: "非公开")
+            }
+        }
     }
 
     private var visibleTypes: [ContentType] {
@@ -32,13 +47,13 @@ struct TypeFilterButton: View {
     var body: some View {
         Menu {
             if !visibleTypes.isEmpty {
-                Section("内容类型") {
+                Section(String(localized: "内容类型")) {
                     ForEach(visibleTypes, id: \.self) { type in
                         Button {
                             selectedType = type
                         } label: {
                             HStack {
-                                Text(type.rawValue)
+                                Text(type.localizedName)
                                 if selectedType == type {
                                     Image(systemName: "checkmark")
                                 }
@@ -49,13 +64,13 @@ struct TypeFilterButton: View {
             }
 
             if restrict != nil {
-                Section("可见性") {
+                Section(String(localized: "可见性")) {
                     ForEach(RestrictType.allCases, id: \.self) { restrictType in
                         Button {
                             selectedRestrict = restrictType
                         } label: {
                             HStack {
-                                Text(restrictType.rawValue)
+                                Text(restrictType.localizedName)
                                 if selectedRestrict == restrictType {
                                     Image(systemName: "checkmark")
                                 }
@@ -66,13 +81,13 @@ struct TypeFilterButton: View {
             }
 
             if cacheFilter != nil {
-                Section("缓存状态") {
+                Section(String(localized: "缓存状态")) {
                     ForEach(BookmarkCacheFilter.allCases, id: \.self) { filter in
                         Button {
                             cacheFilter = filter
                         } label: {
                             HStack {
-                                Text(filter.rawValue)
+                                Text(filter.localizedName)
                                 if cacheFilter == filter {
                                     Image(systemName: "checkmark")
                                 }

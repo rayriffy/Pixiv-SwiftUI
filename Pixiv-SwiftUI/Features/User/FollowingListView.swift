@@ -57,7 +57,7 @@ struct FollowingListView: View {
                 isRefreshing = false
             }
         }
-        .navigationTitle("关注")
+        .navigationTitle(String(localized: "关注"))
         .sensoryFeedback(.impact(weight: .medium), trigger: isRefreshing)
         .toolbar {
             ToolbarItem {

@@ -8,6 +8,14 @@ enum BookmarkCacheFilter: String, CaseIterable {
     case all = "全部"
     case normal = "正常"
     case deleted = "已删除"
+
+    var localizedName: String {
+        switch self {
+        case .all: return String(localized: "全部")
+        case .normal: return String(localized: "正常")
+        case .deleted: return String(localized: "已删除")
+        }
+    }
 }
 
 /// 全量同步状态

@@ -272,6 +272,25 @@ struct ImageViewerWindowContent: View {
     private func downloadAndSave(urlString: String) async {
         guard let url = URL(string: urlString) else { return }
 
+        // 构建文件名
+        let safeTitle: String
+        let safeAuthor: String
+
+        if let illust = illust {
+            safeTitle = ImageSaver.sanitizeFilename(illust.title)
+            safeAuthor = ImageSaver.sanitizeFilename(illust.user.name)
+        } else {
+            // 如果没有 illust 信息，使用 title 参数
+            safeTitle = ImageSaver.sanitizeFilename(title)
+            safeAuthor = ""
+        }
+
+        var filename = safeAuthor.isEmpty ? safeTitle : "\(safeAuthor)_\(safeTitle)"
+        if isMultiPage {
+            filename += "_p\(currentPage)"
+        }
+        filename += ".png"
+
         let source: Source = shouldUseDirectConnection(url: url)
             ? .directNetwork(url)
             : .network(Kingfisher.KF.ImageResource(downloadURL: url))
@@ -281,7 +300,7 @@ struct ImageViewerWindowContent: View {
             if let data = result.image.kf.pngRepresentation() {
                 let savePanel = NSSavePanel()
                 savePanel.allowedContentTypes = [UTType.png]
-                savePanel.nameFieldStringValue = "image.png"
+                savePanel.nameFieldStringValue = filename
 
                 let response = await withCheckedContinuation { continuation in
                     savePanel.begin { result in

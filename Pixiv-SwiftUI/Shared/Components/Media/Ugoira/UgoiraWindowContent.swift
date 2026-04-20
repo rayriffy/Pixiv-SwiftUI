@@ -3,6 +3,10 @@ import Kingfisher
 import UniformTypeIdentifiers
 
 #if os(macOS)
+import AppKit
+#endif
+
+#if os(macOS)
 
 struct UgoiraWindowContent: View {
     let illust: Illusts
@@ -120,7 +124,7 @@ struct UgoiraWindowContent: View {
             }
         }
         .sheet(isPresented: $showExportPanel) {
-            ExportPanel(store: store, isPresented: $showExportPanel)
+            ExportPanel(illust: illust, store: store, isPresented: $showExportPanel)
         }
         .frame(minWidth: 800, minHeight: 600)
     }
@@ -209,6 +213,7 @@ struct UgoiraBottomStatusBar: View {
 }
 
 struct ExportPanel: View {
+    let illust: Illusts
     var store: UgoiraStore
     @Binding var isPresented: Bool
 
@@ -284,7 +289,11 @@ struct ExportPanel: View {
     private func showSavePanel(url: URL) {
         let savePanel = NSSavePanel()
         savePanel.allowedContentTypes = [UTType.gif]
-        savePanel.nameFieldStringValue = "\(store.illustId).gif"
+
+        let safeTitle = ImageSaver.sanitizeFilename(illust.title)
+        let safeAuthor = ImageSaver.sanitizeFilename(illust.user.name)
+        let filename = "\(safeAuthor)_\(safeTitle).gif"
+        savePanel.nameFieldStringValue = filename
 
         savePanel.begin { response in
             if response == .OK, let saveURL = savePanel.url {

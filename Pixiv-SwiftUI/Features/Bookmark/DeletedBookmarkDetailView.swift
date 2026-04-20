@@ -311,7 +311,15 @@ struct DeletedBookmarkDetailView: View {
                     #elseif os(macOS)
                     let savePanel = NSSavePanel()
                     savePanel.allowedContentTypes = [.png]
-                    savePanel.nameFieldStringValue = "\(illust.id)_p\(index).png"
+
+                    let safeTitle = ImageSaver.sanitizeFilename(illust.title)
+                    let safeAuthor = ImageSaver.sanitizeFilename(illust.user.name)
+                    var filename = "\(safeAuthor)_\(safeTitle)"
+                    if urls.count > 1 {
+                        filename += "_p\(index)"
+                    }
+                    filename += ".png"
+                    savePanel.nameFieldStringValue = filename
 
                     if savePanel.runModal() == .OK, let saveURL = savePanel.url {
                         if let pngData = image.image.pngData() {

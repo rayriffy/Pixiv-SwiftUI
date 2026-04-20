@@ -76,8 +76,10 @@ struct NovelSeriesView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Menu {
-                    Button(action: shareSeries) {
-                        Label(String(localized: "分享系列链接"), systemImage: "square.and.arrow.up")
+                    if let shareURL = URL(string: "https://www.pixiv.net/novel/series/\(seriesId)") {
+                        ShareLink(item: shareURL) {
+                            Label(String(localized: "分享系列链接"), systemImage: "square.and.arrow.up")
+                        }
                     }
 
                     Divider()
@@ -305,14 +307,6 @@ struct NovelSeriesView: View {
 
             print("[NovelSeriesView] 系列导出任务已添加到下载队列")
         }
-    }
-
-    private func shareSeries() {
-        guard let detail = store.seriesDetail else { return }
-        guard let url = URL(string: "https://www.pixiv.net/novel/series/\(detail.id)") else { return }
-        #if canImport(UIKit)
-        UIApplication.shared.open(url)
-        #endif
     }
 
     private func exportToCustomLocation(_ url: URL) {

@@ -85,6 +85,24 @@ struct ProfileSettingView: View {
                 #endif
             }
 
+            LabeledContent("漫画详情页画质") {
+                Picker("", selection: Binding(
+                    get: { userSettingStore.userSetting.mangaQuality },
+                    set: { try? userSettingStore.setMangaQuality($0) }
+                )) {
+                    Text("中等").tag(0)
+                    Text("大图").tag(1)
+                    Text("原图").tag(2)
+                }
+                #if os(macOS)
+                .pickerStyle(.menu)
+                .frame(width: 100)
+                #else
+                .pickerStyle(.segmented)
+                .frame(width: 150)
+                #endif
+            }
+
             LabeledContent("大图预览画质") {
                 Picker("", selection: Binding(
                     get: { userSettingStore.userSetting.zoomQuality },
@@ -169,10 +187,16 @@ struct ProfileSettingView: View {
                 set: { try? userSettingStore.setShowSearchPopularBookmarkCount($0) }
             ))
             .toggleStyle(.switch)
+
+            Toggle(String(localized: "默认私密收藏"), isOn: Binding(
+                get: { userSettingStore.userSetting.defaultPrivateLike },
+                set: { try? userSettingStore.setDefaultPrivateLike($0) }
+            ))
+            .toggleStyle(.switch)
         } header: {
             Text("通用")
         } footer: {
-            Text("中等画质节省流量，大图画质更清晰，原图画质最高清（可能消耗更多流量）")
+            Text("中等画质节省流量，大图画质更清晰，原图画质最高清（可能消耗更多流量）。开启默认私密收藏后，收藏作品时将默认为非公开状态。")
         }
     }
     #if os(iOS)

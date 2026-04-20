@@ -252,8 +252,10 @@ struct UserDetailView: View {
                         Label(String(localized: "复制 ID"), systemImage: "doc.on.doc")
                     }
 
-                        Button(action: shareUser) {
-                            Label(String(localized: "分享"), systemImage: "square.and.arrow.up")
+                        if let shareURL = URL(string: "https://www.pixiv.net/users/\(userId)") {
+                            ShareLink(item: shareURL) {
+                                Label(String(localized: "分享"), systemImage: "square.and.arrow.up")
+                            }
                         }
 
                         Button(action: {
@@ -366,12 +368,6 @@ struct UserDetailView: View {
         showCopyToast = true
     }
 
-    private func shareUser() {
-        guard let url = URL(string: "https://www.pixiv.net/users/\(userId)") else { return }
-        #if canImport(UIKit)
-        UIApplication.shared.open(url)
-        #endif
-    }
 }
 
 struct UserDetailHeaderView: View {

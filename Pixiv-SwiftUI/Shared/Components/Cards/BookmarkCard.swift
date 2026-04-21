@@ -14,8 +14,6 @@ struct BookmarkCard: View {
     var isDeleted: Bool = false
     var cacheStatus: BookmarkCacheStatus = .none
 
-    @State private var isBookmarked: Bool = false
-
     init(
         illust: Illusts,
         columnCount: Int = 2,
@@ -30,7 +28,6 @@ struct BookmarkCard: View {
         self.expiration = expiration
         self.isDeleted = isDeleted
         self.cacheStatus = cacheStatus
-        _isBookmarked = State(initialValue: illust.isBookmarked)
     }
 
     private var isR18: Bool {
@@ -53,7 +50,7 @@ struct BookmarkCard: View {
     }
 
     private var bookmarkIconName: String {
-        if !isBookmarked {
+        if !illust.isBookmarked {
             return "heart"
         }
         return illust.bookmarkRestrict == "private" ? "heart.slash.fill" : "heart.fill"
@@ -174,18 +171,18 @@ struct BookmarkCard: View {
 
                 if !isDeleted {
                     Button(action: {
-                        if isBookmarked {
+                        if illust.isBookmarked {
                             toggleBookmark(forceUnbookmark: true)
                         } else {
                             toggleBookmark(isPrivate: userSettingStore.userSetting.defaultPrivateLike)
                         }
                     }) {
                         Image(systemName: bookmarkIconName)
-                            .foregroundColor(isBookmarked ? themeManager.currentColor : .secondary)
+                            .foregroundColor(illust.isBookmarked ? themeManager.currentColor : .secondary)
                             .font(.system(size: 20))
                     }
                     .buttonStyle(.plain)
-                    .sensoryFeedback(.impact(weight: .light), trigger: isBookmarked)
+                    .sensoryFeedback(.impact(weight: .light), trigger: illust.isBookmarked)
                 }
             }
             .padding(8)
@@ -213,7 +210,7 @@ struct BookmarkCard: View {
                 Divider()
                 #endif
 
-                if isBookmarked {
+                if illust.isBookmarked {
                     if illust.bookmarkRestrict == "private" {
                         Button {
                             toggleBookmark(isPrivate: false)
@@ -324,19 +321,19 @@ struct BookmarkCard: View {
     }
 
     private func toggleBookmark(isPrivate: Bool = false, forceUnbookmark: Bool = false) {
-        let wasBookmarked = isBookmarked
+        let wasBookmarked = illust.isBookmarked
         let illustId = illust.id
         let originalTotalBookmarks = illust.totalBookmarks
         let originalBookmarkRestrict = illust.bookmarkRestrict
 
         if forceUnbookmark && wasBookmarked {
-            isBookmarked = false
+            illust.isBookmarked = false
             illust.totalBookmarks -= 1
             illust.bookmarkRestrict = nil
         } else if wasBookmarked {
             illust.bookmarkRestrict = isPrivate ? "private" : "public"
         } else {
-            isBookmarked = true
+            illust.isBookmarked = true
             illust.totalBookmarks += 1
             illust.bookmarkRestrict = isPrivate ? "private" : "public"
         }
@@ -415,7 +412,7 @@ struct BookmarkCard: View {
                 }
             } catch {
                 await MainActor.run {
-                    isBookmarked = wasBookmarked
+                    illust.isBookmarked = wasBookmarked
                     illust.totalBookmarks = originalTotalBookmarks
                     illust.bookmarkRestrict = originalBookmarkRestrict
                 }

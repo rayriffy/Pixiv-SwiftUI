@@ -5,12 +5,9 @@ struct IllustSeriesCard: View {
     let illust: Illusts
     let index: Int
 
-    @State private var isBookmarked: Bool = false
-
     init(illust: Illusts, index: Int) {
         self.illust = illust
         self.index = index
-        _isBookmarked = State(initialValue: illust.isBookmarked)
     }
 
     var body: some View {
@@ -43,9 +40,9 @@ struct IllustSeriesCard: View {
                     }
 
                     HStack(spacing: 4) {
-                        Image(systemName: isBookmarked ? "heart.fill" : "heart")
+                        Image(systemName: illust.isBookmarked ? "heart.fill" : "heart")
                             .font(.caption2)
-                            .foregroundColor(isBookmarked ? .red : .secondary)
+                            .foregroundColor(illust.isBookmarked ? .red : .secondary)
                         Text(NumberFormatter.formatCount(illust.totalBookmarks))
                             .font(.caption)
                     }

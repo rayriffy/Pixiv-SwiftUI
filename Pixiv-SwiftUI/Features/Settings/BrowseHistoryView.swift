@@ -369,8 +369,6 @@ struct BrowseHistoryCard: View {
     let illust: Illusts
     let columnWidth: CGFloat
 
-    @State private var isBookmarked: Bool
-
     private var isR18: Bool {
         return illust.xRestrict == 1
     }
@@ -413,7 +411,7 @@ struct BrowseHistoryCard: View {
     }
 
     private var bookmarkIconName: String {
-        if !isBookmarked {
+        if !illust.isBookmarked {
             return "heart"
         }
         return illust.bookmarkRestrict == "private" ? "heart.slash.fill" : "heart.fill"
@@ -422,7 +420,6 @@ struct BrowseHistoryCard: View {
     init(illust: Illusts, columnWidth: CGFloat) {
         self.illust = illust
         self.columnWidth = columnWidth
-        _isBookmarked = State(initialValue: illust.isBookmarked)
     }
 
     var body: some View {
@@ -496,11 +493,11 @@ struct BrowseHistoryCard: View {
 
                         Button(action: toggleBookmark) {
                             Image(systemName: bookmarkIconName)
-                                .foregroundColor(isBookmarked ? .red : .secondary)
+                                .foregroundColor(illust.isBookmarked ? .red : .secondary)
                                 .font(.system(size: 14))
                         }
                         .buttonStyle(.plain)
-                        .sensoryFeedback(.impact(weight: .light), trigger: isBookmarked)
+                        .sensoryFeedback(.impact(weight: .light), trigger: illust.isBookmarked)
                     }
                 }
                 .padding(8)
@@ -516,13 +513,13 @@ struct BrowseHistoryCard: View {
     }
 
     private func toggleBookmark() {
-        let wasBookmarked = isBookmarked
+        let wasBookmarked = illust.isBookmarked
         let illustId = illust.id
         let defaultIsPrivate = userSettingStore.userSetting.defaultPrivateLike
         let originalBookmarkRestrict = illust.bookmarkRestrict
         let originalTotalBookmarks = illust.totalBookmarks
 
-        isBookmarked.toggle()
+        illust.isBookmarked.toggle()
         if wasBookmarked {
             illust.totalBookmarks -= 1
             illust.bookmarkRestrict = nil
@@ -540,7 +537,7 @@ struct BrowseHistoryCard: View {
                 }
             } catch {
                 await MainActor.run {
-                    isBookmarked = wasBookmarked
+                    illust.isBookmarked = wasBookmarked
                     illust.totalBookmarks = originalTotalBookmarks
                     illust.bookmarkRestrict = originalBookmarkRestrict
                 }

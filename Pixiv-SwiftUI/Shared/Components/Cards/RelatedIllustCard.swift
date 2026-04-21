@@ -15,14 +15,11 @@ struct RelatedIllustCard: View {
     let columnWidth: CGFloat?
     let onTap: (() -> Void)?
 
-    @State private var isBookmarked: Bool = false
-
     init(illust: Illusts, showTitle: Bool = true, columnWidth: CGFloat? = nil, onTap: (() -> Void)? = nil) {
         self.illust = illust
         self.showTitle = showTitle
         self.columnWidth = columnWidth
         self.onTap = onTap
-        _isBookmarked = State(initialValue: illust.isBookmarked)
     }
 
     private var isR18: Bool {
@@ -172,7 +169,7 @@ struct RelatedIllustCard: View {
                 Divider()
                 #endif
 
-                if isBookmarked {
+                if illust.isBookmarked {
                     if illust.bookmarkRestrict == "private" {
                         Button {
                             toggleBookmark(isPrivate: false)
@@ -247,17 +244,17 @@ struct RelatedIllustCard: View {
     }
 
     private func toggleBookmark(isPrivate: Bool = false, forceUnbookmark: Bool = false) {
-        let wasBookmarked = isBookmarked
+        let wasBookmarked = illust.isBookmarked
         let illustId = illust.id
 
         if forceUnbookmark && wasBookmarked {
-            isBookmarked = false
+            illust.isBookmarked = false
             illust.totalBookmarks -= 1
             illust.bookmarkRestrict = nil
         } else if wasBookmarked {
             illust.bookmarkRestrict = isPrivate ? "private" : "public"
         } else {
-            isBookmarked = true
+            illust.isBookmarked = true
             illust.totalBookmarks += 1
             illust.bookmarkRestrict = isPrivate ? "private" : "public"
         }
@@ -318,13 +315,13 @@ struct RelatedIllustCard: View {
             } catch {
                 await MainActor.run {
                     if forceUnbookmark && wasBookmarked {
-                        isBookmarked = true
+                        illust.isBookmarked = true
                         illust.totalBookmarks += 1
                         illust.bookmarkRestrict = "public"
                     } else if wasBookmarked {
                         illust.bookmarkRestrict = wasBookmarked ? "public" : nil
                     } else {
-                        isBookmarked = false
+                        illust.isBookmarked = false
                         illust.totalBookmarks -= 1
                         illust.bookmarkRestrict = nil
                     }
